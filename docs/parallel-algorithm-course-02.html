@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Notes - parallel algorithm course 02</title>
+        
+            <meta name="author" content="Shiguang Wu">
+        
+        
+        <link rel="shortcut icon" type="image/x-icon" href="./images/captain-america-shield.jpg" />
+        <link rel="stylesheet" href="./css/default.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/blog.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+    
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="./">My back yard</a>
+            </div>
+            <div id="navigation">
+                <a href="./">Home</a>
+                <!-- <a href="/archive.html">Archive</a> -->
+                <a href="./about.html">About</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>parallel algorithm course 02</h1>
+
+            <div class="info">
+    Posted on March 16, 2022
+    
+        by Shiguang Wu
+    
+</div>
+
+<h2 id="review">review</h2>
+<hr />
+<p>problem <span class="math inline">\(T_1\)</span></p>
+<p>-&gt; <strong>reduce dependency</strong> -&gt;</p>
+<p>tasks <span class="math inline">\(T_\infin\)</span></p>
+<p>work sharing</p>
+<p>blocks</p>
+<p>synchronization (better to avoid)</p>
+<p>false sharing</p>
+<hr />
+<h2 id="sync">sync</h2>
+<p>Single program multiple data</p>
+<p>seq</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span>i<span class="op">&lt;</span>N<span class="op">;</span>i<span class="op">++)</span> a<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> a<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> b<span class="op">[</span>i<span class="op">];</span></span></code></pre></div>
+<p>omp par</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    id <span class="op">=</span> omp_get_thread_num<span class="op">();</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    Nthrds</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    i_start <span class="op">=</span> id <span class="op">*</span> N <span class="op">/</span> Nthrds</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    i_end <span class="op">=</span> <span class="op">(</span>id<span class="op">+</span><span class="dv">1</span><span class="op">)</span> <span class="op">*</span> N <span class="op">/</span> Nthrds</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>id<span class="op">==</span>Nthrds <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> iend<span class="op">=</span>N</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i<span class="op">=</span>istart<span class="op">;</span>i<span class="op">&lt;</span>iend<span class="op">;</span>i<span class="op">++)</span> <span class="op">...</span>    </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>shorter (but slower)</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel {</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp for</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">()</span> <span class="op">...</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">// or equiv</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel for</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span></code></pre></div>
+<hr />
+<p>loop worksharing constructs</p>
+<p>schedule clause</p>
+<ul>
+<li><p>static: least work for scheduling (done at compiling)</p></li>
+<li><p>dynamic (complex scheduling at run-time)</p></li>
+</ul>
+<hr />
+<p>reduction</p>
+<p>op should be associative</p>
+<p>+,*,-,min,max</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel for reduction (+: sum)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> num_steps<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        sum <span class="op">=</span> sum <span class="op">+</span> x</span></code></pre></div>
+<p>slower than SPMD critical</p>
+<hr />
+<p>omp for loop has barrier by default</p>
+<p>has <strong>implicit barrier</strong></p>
+<p>use <code>nowait</code> to cancel it</p>
+<hr />
+<p>master construct</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp master</span></span></code></pre></div>
+<p>only master thread will execute</p>
+<p><strong>no barrier</strong> for other threads</p>
+<hr />
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp single</span></span></code></pre></div>
+<p>only one thread will execute, has barrier</p>
+<p>use <code>nowait</code> to cancel barrier</p>
+<hr />
+<p>sections</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp sections</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp section</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        thread A</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp section</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        thread B</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>A, B will execute in parallel</p>
+<p>has barrier at the end of sections</p>
+<hr />
+<p>lock routines</p>
+<p><code>omp_init_lock();</code></p>
+<p><code>omp_set_lock(), omp_unset_lock()</code></p>
+<p><code>omp_destroy_lock()</code></p>
+<p>e.g. array</p>
+<p>if use critical on <code>a[i]</code>, then the whole array <code>a</code> will be lock</p>
+<p>#bins <span class="math inline">\(\gg\)</span> #threads</p>
+<p>low prob of false sharing, conficts are rare, use locks</p>
+<hr />
+<p>OMP refernce card</p>
+<hr />
+<p><code>omp_set_dynamic()</code></p>
+<hr />
+<p>env vars</p>
+<p><code>OMP_NUM_THREADS</code></p>
+<hr />
+<p>heap: shared</p>
+<p>stack: private</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tmp<span class="op">=</span><span class="dv">0</span><span class="op">;</span> <span class="co">// in heap</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parell for private(tmp)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i<span class="op">;</span> i <span class="op">&lt;</span> N<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        tmp <span class="op">+=</span> j<span class="op">;</span> <span class="co">// not initialized, local copy ( in stack )</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>print<span class="op">(</span>tmp<span class="op">);</span> <span class="co">// 0 here</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tmp<span class="op">=</span><span class="dv">1</span><span class="op">;</span> <span class="co">// in heap</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parell for firstprivate(tmp)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">()</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        tmp <span class="op">+=</span> j<span class="op">;</span> <span class="co">// has initialized with 1, local copy ( in stack )</span></span></code></pre></div>
+<p>not use often: lastprivate</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tmp<span class="op">=</span><span class="dv">0</span><span class="op">,</span> lastterm<span class="op">;</span> <span class="co">// in heap</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parell for lastprivate(j)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">()</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        tmp <span class="op">+=</span> j<span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    lastterm<span class="op">=</span>j<span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>print<span class="op">(</span>tmp<span class="op">);</span></span></code></pre></div>
+
+<hr>
+
+<nav class="info">
+    <a href="./">Home</a>
+    <a href="mailto:furyton@outlook.com">Email Me</a>
+</nav>
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>, this site project is located at <a href="https://github.com/Furyton/my-little-notes">Github</a>
+        </div>
+    </body>
+</html>

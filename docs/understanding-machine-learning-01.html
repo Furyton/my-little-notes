@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Notes - understanding machine learning 01</title>
+        
+            <meta name="author" content="Shiguang Wu">
+        
+        
+        <link rel="shortcut icon" type="image/x-icon" href="./images/captain-america-shield.jpg" />
+        <link rel="stylesheet" href="./css/default.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/blog.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+    
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="./">My back yard</a>
+            </div>
+            <div id="navigation">
+                <a href="./">Home</a>
+                <!-- <a href="/archive.html">Archive</a> -->
+                <a href="./about.html">About</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>understanding machine learning 01</h1>
+
+            <div class="info">
+    Posted on March  3, 2022
+    
+        by Shiguang Wu
+    
+</div>
+
+<h2 id="formal-def">formal def</h2>
+<ul>
+<li><p>domain set. a set of instances <span class="math inline">\(\mathcal{X}\)</span></p></li>
+<li><p>label set. <span class="math inline">\(\mathcal{Y}\)</span></p></li>
+<li><p>training data. finite <strong>sequence</strong> <span class="math inline">\(\mathcal{S}\)</span> in <span class="math inline">\(\mathcal{X}\times \mathcal{Y}\)</span></p></li>
+<li><p>learner. output a rule, <span class="math inline">\(h:\mathcal{X}\rightarrow\mathcal{Y}\)</span>. learning algorithm <span class="math inline">\(\mathcal{A(S)}\)</span></p></li>
+<li><p>data-generation model. ideally, we assume (for sim) there exists a "correct" labeling funciton, <span class="math inline">\(f\)</span>. and <span class="math inline">\(\mathcal{S}\)</span> is generated under an unknown distrib <span class="math inline">\(\mathcal{D}\)</span>, then labeling it using <span class="math inline">\(f\)</span>.</p></li>
+<li><p>measurement. actually generalization error (risk or true error of <span class="math inline">\(f\)</span>)</p></li>
+</ul>
+<p><span class="math display">\[
+L_{\mathcal{D},f}(h):=\mathbb{P}_{x\sim D}[h(x)\neq f(x)]:=\mathcal{D}(\{x:h(x)\neq f(x)\})
+\]</span></p>
+<p>where <span class="math inline">\(\mathcal{D}\)</span> desc the prob of the event of observation.</p>
+<p><span class="math inline">\(\mathcal{D}(A):=\mathbb{P}_{x\sim D}[\pi(x)]\)</span>, where <span class="math inline">\(\pi\)</span> is the char func of whether it was observed. <span class="math inline">\(A={x\in \mathcal{X}:\pi(x)=1}\)</span></p>
+<h2 id="erm-empirical-risk-minimization">ERM (empirical risk minimization)</h2>
+<p>use training loss to approx generalization loss.</p>
+<h3 id="overfitting">overfitting</h3>
+<p>we may obtain a bunch of funcs just by ERM. so we need an inductive bias to set a preference on a certain funcs.</p>
+<p>we choose the <strong>hypothesis space</strong> H before seeing the data. restric our search space of the ERM, otherwise we got a trivial useless solution.</p>
+<p><strong>before seeing the data</strong> <span class="math inline">\(\rightarrow\)</span> should based on some prior knowledge.</p>
+<h2 id="h">H</h2>
+<h3 id="finite-h-space">finite H space</h3>
+<p><span class="math inline">\(\mathcal{H}\)</span> will not overfit provided a sufficiently large training set.</p>
+<p>note: the class of axix-aligned rectangles could be finite if we consider it on a computer. (discrete repr of real numbers)</p>
+<p><span class="math inline">\(h_S\in argmin_{h\in H}L_s(h)\)</span></p>
+<p>since S are randomly chosen, so <span class="math inline">\(h_S,L_{D,f}\)</span> are actually <strong>random vars</strong>.</p>
+<h3 id="a-few-assumptions">a few assumptions</h3>
+<h4 id="def-the-realizability-assumption"><strong>def</strong> the realizability assumption</h4>
+<p>there exists <span class="math inline">\(h^\star\in\mathcal{H}\)</span> s.t. <span class="math inline">\(L_{D,f}(h^\star)=0\)</span></p>
+<p>further, we have</p>
+<p><span class="math inline">\(\rightarrow L_S(h^\star)=0 \text{ with prob 1 over the S }\rightarrow L_S(h_S)=0\)</span></p>
+<p>we are interested in <span class="math inline">\(L_{D,f}(h_S)\)</span></p>
+<h4 id="confidence-param">confidence param</h4>
+<p>we address a prob <span class="math inline">\(\delta\)</span> of getting a very nonrepresentative training set (e.g all lie in class A). and <span class="math inline">\((1-\delta)\)</span> is the confidence of our prediction.</p>
+<h4 id="accuracy-param">accuracy param</h4>
+<p><span class="math inline">\(\epsilon\)</span></p>
+<p>we call <span class="math inline">\(L_{D,f}(h_S)\ge \epsilon\)</span> as a failure of the learner, otherwise approx correct predictor.</p>
+<p>so we're intrsted in the upper bound of prob to sample S that lead a failure of the learner.</p>
+<p>upper bound of</p>
+<p><span class="math display">\[
+D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\}
+\]</span></p>
+<p>let <span class="math inline">\(H_B\)</span> be the set of bad hypotheses</p>
+<p><span class="math display">\[
+\{h\in H: L_{D,f}\gt \epsilon\}
+\]</span></p>
+<p>let M be the set of misleading training set</p>
+<p><span class="math display">\[
+\{S|_x:\exists h\in H_B, L_S(h)=0\}
+\]</span></p>
+<p>where <span class="math inline">\(S|_x\)</span> is the instances of tr set</p>
+<p>due to real.. assumption, only M will cause failure.</p>
+<p>so only a subset of S from M will cause <span class="math inline">\(h_S\)</span> fail.</p>
+<p><span class="math display">\[
+D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\} \le \sum_{h\in H_B}D^m\{S|_x:L_S(h)=0\}=\sum_{h\in H_B}\prod D\{x_i:h(x_i)=f(x_i)\}
+\]</span></p>
+<p>here, the countability of <span class="math inline">\(\mathcal{H}\)</span> is used, and I think if we can control the order of <span class="math inline">\(|\mathcal{H}|\)</span> and with more careful scaling (with more assumption or knowledge about the h's, like <span class="math inline">\(D^m\{S|_x:L_S(h)=0\}\)</span> can be approx related to h) then we could have the inf conclusion, though maybe not that interesting, and there are other ways on it.</p>
+<p>and</p>
+<p><span class="math display">\[
+D\{x_i:h(x_i)=f(x_i)\}=1-L_{D,f}(h)\le 1-\epsilon
+\]</span></p>
+<p>so using a series of loose relaxation, we have</p>
+<p><span class="math display">\[
+D^m\{S|_x:L_{D,f}(h_S)\}\le |H_B|e^{-\epsilon m}\le |H|e^{-\epsilon m}
+\]</span></p>
+<p>finity is used here</p>
+<p>LHS is <span class="math inline">\(\delta\)</span></p>
+<p>note sometimes m should be really large to ensure with at least <span class="math inline">\(1-\delta\)</span> confidence over the choice of S, every ERM hypothesis, <span class="math inline">\(h_S\)</span> is approx correct.</p>
+<h2 id="small-corollary">small corollary</h2>
+<p>when hypothesis space is finite, then we can immediately have an upper bound for <span class="math inline">\(m_{\mathcal{H}}\)</span></p>
+<p><span class="math display">\[
+m_{\mathcal{H}}(\epsilon,\delta)\le \left \lceil \frac{log\left(|\mathcal{H}|/\delta\right)}{\epsilon} \right \rceil
+\]</span></p>
+
+<hr>
+
+<nav class="info">
+    <a href="./">Home</a>
+    <a href="mailto:furyton@outlook.com">Email Me</a>
+</nav>
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>, this site project is located at <a href="https://github.com/Furyton/my-little-notes">Github</a>
+        </div>
+    </body>
+</html>

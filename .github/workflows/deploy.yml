@@ -1,0 +1,29 @@
+name: deploy
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: haskell:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: |
+          ls
+          stack --version
+          chown -R $(id -un):$(id -gn) ~
+          TAR_OPTIONS=--no-same-owner stack --allow-different-user build
+          stack exec mynotes rebuild
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: 'docs'
+          destination-github-username: 'Furyton'
+          destination-repository-name: 'my-little-notes'
+          user-email: 1543159426@qq.com
+          target-branch: gh-pages

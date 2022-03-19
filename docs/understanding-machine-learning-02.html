@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Notes - Understanding Machine Learning 02</title>
+        
+            <meta name="author" content="Shiguang Wu">
+        
+        
+        <link rel="shortcut icon" type="image/x-icon" href="./images/captain-america-shield.jpg" />
+        <link rel="stylesheet" href="./css/default.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/blog.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+    
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="./">My back yard</a>
+            </div>
+            <div id="navigation">
+                <a href="./">Home</a>
+                <!-- <a href="/archive.html">Archive</a> -->
+                <a href="./about.html">About</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Understanding Machine Learning 02</h1>
+
+            <div class="info">
+    Posted on March  8, 2022
+    
+        by Shiguang Wu
+    
+</div>
+
+<h2 id="def-pac">def PAC</h2>
+<p>def <em>PAC learnablilty</em></p>
+<p>hypothesis H is PAC learnable if realizability assumption holds, and exists <span class="math inline">\(m_H(\epsilon,\delta)\rightarrow\N\)</span></p>
+<p>where with #i.i.d. sample <span class="math inline">\(\ge m_H\)</span>, we always have a probability approx correct h just using ERM.</p>
+<h2 id="removing-realizability-assumption">removing realizability assumption</h2>
+<p>the realizability assumption is too strong and unrealistic where we assume the existence of a perfect hypothesis from <span class="math inline">\(\mathcal{H}\)</span> that can reveal ground truth <span class="math inline">\(f\)</span> with <span class="math inline">\(Pr=1\)</span></p>
+<p>so, change <span class="math inline">\(f(x)\)</span> into a joint distrib <span class="math inline">\(D(x,y)\)</span> as most researchers would do</p>
+<p>def generalized risk as <span class="math inline">\(L_D(h)\coloneqq \mathcal{P}_{(x,y)\sim D}[h(x)\neq y]\coloneqq D(\{(x,y):h(x)\neq y\})\)</span>, just changed <span class="math inline">\(D\)</span> into a joint distrib</p>
+<p>empirical risk is the same</p>
+<p>still, when take <span class="math inline">\(D\)</span> to be an uniform distrib on <span class="math inline">\(S\)</span>, they are eq</p>
+<p>ideally, func “<span class="math inline">\(f_D(x)=1\text{ if }Pr[y=1|x]\ge 0.5\text{ and 0 otherwise}\)</span>” is the optimal sol to the gen risk min problem when <span class="math inline">\(\mathcal{Y}=\{0,1\}\)</span>, w.r.t 0-1 loss. Bayes optimal sol.</p>
+<hr />
+<p><em>note</em>: my stupid short proof about the above</p>
+<p>we need to proof</p>
+<p><span class="math display">\[
+[f(x)\neq 0]Pr(y=0|x)+[f(x)\neq 1]Pr(y=1|x)\\
+\le [g(x)\neq 0]Pr(y=0|x)\dots
+\]</span></p>
+<p>just consider cond on <span class="math inline">\(Pr(y=0|x)\gt 0.5\)</span>, and it becomes</p>
+<p><span class="math display">\[
+LHS=Pr(y=1|x)\\
+=\{[g(x)\neq 0]+[g(x)\neq 1]\}Pr(y=1|x)\\
+\le RHS
+\]</span> very ugly and not clever proof :/ <span class="math inline">\(\blacksquare\)</span></p>
+<hr />
+<p>here, we still have <strong>the opt function</strong> <span class="math inline">\(f\)</span> which minimizes the gen risk, but not minimize it to zero</p>
+<h2 id="def-agnostic不可知论的-pac-learnability">def Agnostic(不可知论的) PAC learnability</h2>
+<p>before: <span class="math inline">\(L_{D,f}(h)\le \epsilon\)</span>, now: <span class="math inline">\(L_{D}(h)\le min_{g\in\mathcal{H}}L_{D}(g)+\epsilon\)</span></p>
+<p>so <span class="math inline">\(f\)</span> above will not be used but the joint distrib <span class="math inline">\(D\)</span> instead</p>
+<p>and we see that if realizability assumption holds, it’s the same as original PAC learnability</p>
+<p>agnostic just means we can’t obtain an h with arbitrary small gen risk</p>
+<p>relative best instead of abs best</p>
+<h2 id="other-loss-functions">other loss functions</h2>
+<p>we can actually use other measures in place of the 0-1 loss, especially in regression problems</p>
+<p>naturally, we can extend the loss function into a more formal definition, <span class="math inline">\(l:\mathcal{H}\times\mathcal{Z}\rightarrow \R_+\)</span>, where <span class="math inline">\(\mathcal{Z}\)</span> is the set of instances, in prediction tasks, it could be <span class="math inline">\(\mathcal{X}\times\mathcal{Y}\)</span></p>
+<h3 id="agnostic-pac-learnability-for-general-loss-functions">Agnostic PAC learnability for General Loss Functions</h3>
+<p><span class="math inline">\(L_D(h)\le\min_{h'\in\mathcal{H}}L_D(h')+\epsilon\)</span></p>
+<p>where <span class="math inline">\(L_D(h)=\mathcal{E}_{z\sim D}[l(h,z)]\)</span></p>
+<p><em>note</em>: <span class="math inline">\(l(h,\dot)\)</span> is a rand var, it should be measurable..</p>
+<h2 id="some-exercises">some exercises</h2>
+<ul>
+<li><p>3.1. about monotonicity of <span class="math inline">\(m_\mathcal{H}\)</span> on <span class="math inline">\(\epsilon\)</span> and <span class="math inline">\(\delta\)</span> respectively: seems trivial</p></li>
+<li><p>3.2. about <span class="math inline">\(\mathcal{H}_{singleton}\)</span>: first you need to come up with a simple learning alg. if no pos samples appear, just choose <span class="math inline">\(h^-\)</span>. this is enough to proof the PAC learnability, as m is large enough, the cost will be small enough</p></li>
+<li><p>3.3. about <span class="math inline">\(\mathcal{H}\)</span> consist of disks. similar to the rect situation from this chap, but simpler, ’cause it’s convenient to construct how the bad samples look like</p></li>
+<li><p>3.4. about <span class="math inline">\(\mathcal{H}\)</span> consist of boolean conjunctions. similar to 3.2. it’s easy to determine f if <span class="math inline">\(S\)</span> contains a positive sample, otherwise, we just return an all-negative hypothesis</p></li>
+<li><p>3.5. about samples from i. but not i.d. from the derivation of the finite hypo corollary, the key is to deal with <span class="math inline">\(\prod_i \mathcal{P}_{x\in D_i}(x_i|h(x_i)=f(x_i))\)</span>, where the GA mean ineq could be used to make it as <span class="math inline">\((1-\epsilon)^m\)</span></p></li>
+<li><p>3.6. ??, since you added the realizability assumption, it’s naive to have the PAC learnability, maybe?</p></li>
+<li><p>3.7. about ideally opt sol of binary classification (w.r.t 0-1 loss). see <a href="#removing-realizability-assumption">this</a></p></li>
+<li><p>3.8.1. same question as above, but use abs loss, and consider probabilistic hypothesis (outputs a distribution instead of determinstic answer), method from <a href="#removing-realizability-assumption">here</a> seems enough?</p></li>
+<li><p>3.8.2. prove the existence of a learning algo that is better than any others provided <span class="math inline">\(D\)</span>. ??? an algo from God that can directly output <span class="math inline">\(f\)</span> from the previous question -_-</p></li>
+<li><p>3.8.3. for every learning algo A from <span class="math inline">\(D\)</span>, there always exists a B and <span class="math inline">\(D'\)</span> that A is not better than B on <span class="math inline">\(D\)</span>. shit, this is also naive from 3.8.2</p></li>
+<li><p>3.9. about a variant of PAC learnability, which uses two-oracle model that allow learner access to <span class="math inline">\(D^+\)</span> and <span class="math inline">\(D^-\)</span> on its preference. the learner can actually change the popularity of the observances, e.g. a learner can take sample from both pos and neg with equal probability (I don’t understand here so much, does )</p>
+<ul>
+<li><ol type="1">
+<li>proof PAC in the standard model <span class="math inline">\(\implies\)</span> PAC in the two-oracle model. we need to construct a learner from the one in standard model. suppose the learner puts equal weights on pos and neg samples, it in fact learns a population with equal pos and neg using standard model. denote the new distribution as <span class="math inline">\(D'\)</span>, so</li>
+</ol></li>
+</ul>
+<p><span class="math display">\[\begin{aligned}
+L_{D'}(h)&amp;=P_{D'}[h\neq f,f=0]+P_{D'}[h\neq f, f=1]\\
+&amp;=P_{D'}[f=0]P_D[h\neq f|f=0]+P_{D'}[f=1]P_D[h\neq f|f=1]\\
+&amp;=\frac{1}{2} L_{D^+}(h)+\frac{1}{2}L_{D^-}(h)
+\end{aligned}
+\]</span></p>
+<ul>
+<li><ol start="2" type="1">
+<li>proof PAC in the two-oracle model <span class="math inline">\(\implies\)</span> PAC in the standard model if <span class="math inline">\(h^+,h^-\in\mathcal{H}\)</span>. if we have enough samples (<span class="math inline">\(m_H\)</span>), it will contain <span class="math inline">\(m^+\)</span> pos and <span class="math inline">\(m^-\)</span> neg with high prob, and even it fails to have enough pos (or neg), we can just return <span class="math inline">\(h^-\)</span> ((<span class="math inline">\(h^+\)</span>) and won’t cost much risk.</li>
+</ol></li>
+</ul></li>
+</ul>
+
+<hr>
+
+<nav class="info">
+    <a href="./">Home</a>
+    <a href="mailto:furyton@outlook.com">Email Me</a>
+</nav>
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>, this site project is located at <a href="https://github.com/Furyton/my-little-notes">Github</a>
+        </div>
+    </body>
+</html>
