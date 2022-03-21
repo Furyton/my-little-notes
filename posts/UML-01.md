@@ -40,6 +40,8 @@ we choose the **hypothesis space** H before seeing the data. restric our search 
 
 ## H
 
+examples of H
+
 ### finite H space
 
 $\mathcal{H}$ will not overfit provided a sufficiently large training set.
@@ -51,6 +53,8 @@ $h_S\in argmin_{h\in H}L_s(h)$
 since S are randomly chosen, so $h_S,L_{D,f}$ are actually **random vars**.
 
 ### a few assumptions
+
+a few assumptions on the PAC learnability
 
 #### **def** the realizability assumption
 

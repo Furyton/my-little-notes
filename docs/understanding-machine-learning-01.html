@@ -62,12 +62,14 @@ L_{\mathcal{D},f}(h):=\mathbb{P}_{x\sim D}[h(x)\neq f(x)]:=\mathcal{D}(\{x:h(x)\
 <p>we choose the <strong>hypothesis space</strong> H before seeing the data. restric our search space of the ERM, otherwise we got a trivial useless solution.</p>
 <p><strong>before seeing the data</strong> <span class="math inline">\(\rightarrow\)</span> should based on some prior knowledge.</p>
 <h2 id="h">H</h2>
+<p>examples of H</p>
 <h3 id="finite-h-space">finite H space</h3>
 <p><span class="math inline">\(\mathcal{H}\)</span> will not overfit provided a sufficiently large training set.</p>
 <p>note: the class of axix-aligned rectangles could be finite if we consider it on a computer. (discrete repr of real numbers)</p>
 <p><span class="math inline">\(h_S\in argmin_{h\in H}L_s(h)\)</span></p>
 <p>since S are randomly chosen, so <span class="math inline">\(h_S,L_{D,f}\)</span> are actually <strong>random vars</strong>.</p>
 <h3 id="a-few-assumptions">a few assumptions</h3>
+<p>a few assumptions on the PAC learnability</p>
 <h4 id="def-the-realizability-assumption"><strong>def</strong> the realizability assumption</h4>
 <p>there exists <span class="math inline">\(h^\star\in\mathcal{H}\)</span> s.t. <span class="math inline">\(L_{D,f}(h^\star)=0\)</span></p>
 <p>further, we have</p>
