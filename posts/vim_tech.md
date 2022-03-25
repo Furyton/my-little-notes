@@ -2,6 +2,7 @@
 title: vim techs
 author: Shiguang Wu
 date: 2022-03-08
+tag: vim
 ---
 
 ## yank abs path or relative path in NerdTree

@@ -1,7 +1,8 @@
 ---
-title: understanding machine learning 01
+title: Understanding Machine Learning 01
 date: 2022-03-03
 author: Shiguang Wu
+tag: UML
 ---
 
 ## formal def
@@ -36,7 +37,7 @@ we may obtain a bunch of funcs just by ERM. so we need an inductive bias to set 
 
 we choose the **hypothesis space** H before seeing the data. restric our search space of the ERM, otherwise we got a trivial useless solution.
 
-**before seeing the data** $\rightarrow$ should based on some prior knowledge.
+**before seeing the data** $\rightarrow$ should be based on some prior knowledge.
 
 ## H
 
@@ -76,7 +77,7 @@ $\epsilon$
 
 we call $L_{D,f}(h_S)\ge \epsilon$ as a failure of the learner, otherwise approx correct predictor.
 
-so we\'re intrsted in the upper bound of prob to sample S that lead a failure of the learner.
+So we\'re interested in the upper bound of prob to sample S that leads to the learner's failure.
 
 upper bound of
 
@@ -90,7 +91,7 @@ $$
 \{h\in H: L_{D,f}\gt \epsilon\}
 $$
 
-let M be the set of misleading training set
+let M be the set of the misleading training set
 
 $$
 \{S|_x:\exists h\in H_B, L_S(h)=0\}
@@ -100,10 +101,10 @@ where $S|_x$ is the instances of tr set
 
 due to real.. assumption, only M will cause failure.
 
-so only a subset of S from M will cause $h_S$ fail.
+so only a subset of S from M will cause $h_S$ to fail.
 
 $$
-D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\} \le \sum_{h\in H_B}D^m\{S|_x:L_S(h)=0\}=\sum_{h\in H_B}\prod D\{x_i:h(x_i)=f(x_i)\}
+D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\} \\\le \sum_{h\in H_B}D^m\{S|_x:L_S(h)=0\}\\=\sum_{h\in H_B}\prod D\{x_i:h(x_i)=f(x_i)\}
 $$
 
 here, the countability of $\mathcal{H}$ is used, and I think if we can control the order of $|\mathcal{H}|$ and with more careful scaling (with more assumption or knowledge about the h\'s, like $D^m\{S|_x:L_S(h)=0\}$ can be approx related to h) then we could have the inf conclusion, though maybe not that interesting, and there are other ways on it.
@@ -120,11 +121,11 @@ $$
 D^m\{S|_x:L_{D,f}(h_S)\}\le |H_B|e^{-\epsilon m}\le |H|e^{-\epsilon m}
 $$
 
-finity is used here
+finite is used here
 
 LHS is $\delta$
 
-note sometimes m should be really large to ensure with at least $1-\delta$ confidence over the choice of S, every ERM hypothesis, $h_S$ is approx correct.
+Note sometimes m should be really large to ensure with at least $1-\delta$ confidence over the choice of S, every ERM hypothesis, $h_S$ is approx correct.
 
 ## small corollary
 

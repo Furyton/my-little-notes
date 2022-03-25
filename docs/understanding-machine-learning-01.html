@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Notes - understanding machine learning 01</title>
+        <title>Notes - Understanding Machine Learning 01</title>
         
             <meta name="author" content="Shiguang Wu">
         
@@ -32,10 +32,10 @@
         </div>
 
         <div id="content">
-            <h1>understanding machine learning 01</h1>
+            <h1>Understanding Machine Learning 01</h1>
 
             <div class="info">
-    Posted on March  3, 2022
+    Posted on March  3, 2022 tag: UML
     
         by Shiguang Wu
     
@@ -60,7 +60,7 @@ L_{\mathcal{D},f}(h):=\mathbb{P}_{x\sim D}[h(x)\neq f(x)]:=\mathcal{D}(\{x:h(x)\
 <h3 id="overfitting">overfitting</h3>
 <p>we may obtain a bunch of funcs just by ERM. so we need an inductive bias to set a preference on a certain funcs.</p>
 <p>we choose the <strong>hypothesis space</strong> H before seeing the data. restric our search space of the ERM, otherwise we got a trivial useless solution.</p>
-<p><strong>before seeing the data</strong> <span class="math inline">\(\rightarrow\)</span> should based on some prior knowledge.</p>
+<p><strong>before seeing the data</strong> <span class="math inline">\(\rightarrow\)</span> should be based on some prior knowledge.</p>
 <h2 id="h">H</h2>
 <p>examples of H</p>
 <h3 id="finite-h-space">finite H space</h3>
@@ -80,7 +80,7 @@ L_{\mathcal{D},f}(h):=\mathbb{P}_{x\sim D}[h(x)\neq f(x)]:=\mathcal{D}(\{x:h(x)\
 <h4 id="accuracy-param">accuracy param</h4>
 <p><span class="math inline">\(\epsilon\)</span></p>
 <p>we call <span class="math inline">\(L_{D,f}(h_S)\ge \epsilon\)</span> as a failure of the learner, otherwise approx correct predictor.</p>
-<p>so we're intrsted in the upper bound of prob to sample S that lead a failure of the learner.</p>
+<p>So we're interested in the upper bound of prob to sample S that leads to the learner’s failure.</p>
 <p>upper bound of</p>
 <p><span class="math display">\[
 D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\}
@@ -89,15 +89,15 @@ D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\}
 <p><span class="math display">\[
 \{h\in H: L_{D,f}\gt \epsilon\}
 \]</span></p>
-<p>let M be the set of misleading training set</p>
+<p>let M be the set of the misleading training set</p>
 <p><span class="math display">\[
 \{S|_x:\exists h\in H_B, L_S(h)=0\}
 \]</span></p>
 <p>where <span class="math inline">\(S|_x\)</span> is the instances of tr set</p>
 <p>due to real.. assumption, only M will cause failure.</p>
-<p>so only a subset of S from M will cause <span class="math inline">\(h_S\)</span> fail.</p>
+<p>so only a subset of S from M will cause <span class="math inline">\(h_S\)</span> to fail.</p>
 <p><span class="math display">\[
-D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\} \le \sum_{h\in H_B}D^m\{S|_x:L_S(h)=0\}=\sum_{h\in H_B}\prod D\{x_i:h(x_i)=f(x_i)\}
+D^m\{S|_x:L_{D,f}(h_S)\gt \epsilon\} \\\le \sum_{h\in H_B}D^m\{S|_x:L_S(h)=0\}\\=\sum_{h\in H_B}\prod D\{x_i:h(x_i)=f(x_i)\}
 \]</span></p>
 <p>here, the countability of <span class="math inline">\(\mathcal{H}\)</span> is used, and I think if we can control the order of <span class="math inline">\(|\mathcal{H}|\)</span> and with more careful scaling (with more assumption or knowledge about the h's, like <span class="math inline">\(D^m\{S|_x:L_S(h)=0\}\)</span> can be approx related to h) then we could have the inf conclusion, though maybe not that interesting, and there are other ways on it.</p>
 <p>and</p>
@@ -108,9 +108,9 @@ D\{x_i:h(x_i)=f(x_i)\}=1-L_{D,f}(h)\le 1-\epsilon
 <p><span class="math display">\[
 D^m\{S|_x:L_{D,f}(h_S)\}\le |H_B|e^{-\epsilon m}\le |H|e^{-\epsilon m}
 \]</span></p>
-<p>finity is used here</p>
+<p>finite is used here</p>
 <p>LHS is <span class="math inline">\(\delta\)</span></p>
-<p>note sometimes m should be really large to ensure with at least <span class="math inline">\(1-\delta\)</span> confidence over the choice of S, every ERM hypothesis, <span class="math inline">\(h_S\)</span> is approx correct.</p>
+<p>Note sometimes m should be really large to ensure with at least <span class="math inline">\(1-\delta\)</span> confidence over the choice of S, every ERM hypothesis, <span class="math inline">\(h_S\)</span> is approx correct.</p>
 <h2 id="small-corollary">small corollary</h2>
 <p>when hypothesis space is finite, then we can immediately have an upper bound for <span class="math inline">\(m_{\mathcal{H}}\)</span></p>
 <p><span class="math display">\[

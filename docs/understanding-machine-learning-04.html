@@ -35,29 +35,29 @@
             <h1>Understanding Machine Learning 04</h1>
 
             <div class="info">
-    Posted on March 16, 2022
+    Posted on March 16, 2022 tag: UML
     
         by Shiguang Wu
     
 </div>
 
 <h2 id="no-free-lunch-theorem">No-Free-Lunch Theorem</h2>
-<p>What is a <em>universal learner</em>? It means it doesn’t need any prior knowledge. To be more specific, <span class="math inline">\(\mathcal{H}\)</span> that contains all possible functions is PAC-learnable. ? that is certainly not true, since this is about NFL theorem.</p>
+<p>What is a <em>universal learner</em>? It means it doesn’t need any prior knowledge. To be more specific, <span class="math inline">\(\mathcal{H}\)</span> that contains all possible functions is PAC-learnable. ? that is certainly not true since this is about the NFL theorem.</p>
 <p>Typically, prior knowledge could be assumptions of knowing <span class="math inline">\(\mathcal{D}\)</span> comes from some family of distribution or assuming <span class="math inline">\(\exists h\in\mathcal{H}\)</span> that <span class="math inline">\(L_D(h)\)</span> is small enough.</p>
 <h3 id="nfl-theorem">NFL theorem</h3>
-<p>we consider binary classification prob and 0-1 loss over <span class="math inline">\(\mathcal{X}\)</span></p>
+<p>we consider binary classification problem and 0-1 loss over <span class="math inline">\(\mathcal{X}\)</span></p>
 <p><span class="math inline">\(m\)</span> be the tr set size smaller than <span class="math inline">\(\frac{|\mathcal{X}|}{2}\)</span>, A be any learner</p>
 <p>there is a D that</p>
 <ul>
 <li><p>there exists <span class="math inline">\(f\)</span>, with zero error on <span class="math inline">\(\mathcal{D}\)</span></p></li>
-<li><p>with prob of at least 1/7 over the choice of <span class="math inline">\(S\sim \mathcal{D}^m\)</span> we have the error of <span class="math inline">\(A(S)\ge 1/8\)</span></p></li>
+<li><p>with a probability of at least 1/7 over the choice of <span class="math inline">\(S\sim \mathcal{D}^m\)</span> we have the error of <span class="math inline">\(A(S)\ge 1/8\)</span></p></li>
 </ul>
 <p>Let’s prove this famous theorem!!!</p>
 <hr />
 <p>let C be a subset of <span class="math inline">\(\mathcal{X}\)</span> with size 2m as the finite ‘domain’ we will consider</p>
-<p>the intuition is that since the learner can only see at most half of the domain set, we can then make the other part of distrib anything we want to defeat A</p>
+<p>the intuition is that since the learner can only see at most half of the domain set, we can then make the other part of distribution anything we want to defeat A</p>
 <p>we need to find the D and f</p>
-<p>there could be like <span class="math inline">\(2^{2m}\)</span> possible f’s, we can prove that</p>
+<p>there could be like <span class="math inline">\(2^{2m}\)</span> possible f’s; we can prove that</p>
 <p><span class="math display">\[
 \max_{D,f}\mathbb{E}_{S\sim D^m}[L_{D,f}(A(S))]\ge 1/4
 \]</span></p>
@@ -81,7 +81,7 @@ D_i(x,y) = \begin{cases}
 \end{aligned}
 \]</span></p>
 <p>here the <span class="math inline">\(i\)</span> in <span class="math inline">\(S_j^i\)</span> means the <em>label</em> is assigned by <span class="math inline">\(D_i\)</span>, hence <span class="math inline">\(f_i\)</span></p>
-<p>we now convert the problem of finding the <span class="math inline">\(f\)</span> into finding <span class="math inline">\(S_j^i\)</span> that has a large error averaged on all functions. Intuitively, since we consider <strong>all</strong> functions, they must have some disagreement on the samples</p>
+<p>We now convert the problem of finding the <span class="math inline">\(f\)</span> into <span class="math inline">\(S_j^i\)</span> that has a significant error averaged on all functions. Intuitively, since we consider <strong>all</strong> functions, they must have some disagreement on the samples</p>
 <p>for <span class="math inline">\(S_j^i\)</span>, we let <span class="math inline">\(P=\{x_i\in C|x_i\notin S_j^i\}\)</span> and <span class="math inline">\(p=|P|\)</span>, where <span class="math inline">\(p\ge m\)</span></p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -99,8 +99,8 @@ D_i(x,y) = \begin{cases}
 \end{aligned}
 \]</span></p>
 <p>there are details here, note we have removed out the instances that are in <span class="math inline">\(S_j\)</span> (no <span class="math inline">\(i\)</span> here), that is because <span class="math inline">\(\mathbf{1}[f_i(x)\neq A(S_j^i)(x)]\)</span> will always be zero if <span class="math inline">\(x\in S_j\)</span> and we can certainly not consider them</p>
-<p>second, since we take <span class="math inline">\(f\)</span> from func space that contains all possible funcs, so they can actually be seperated into pairs that can cancellate each other</p>
-<p>there must always exist a pair of f’s (<span class="math inline">\(f_a\)</span> and <span class="math inline">\(f_b\)</span>), that only differ on one instance <span class="math inline">\(x\)</span> which is not in <span class="math inline">\(S_j\)</span> (<span class="math inline">\(x\in P\)</span>)</p>
+<p>second, since we take <span class="math inline">\(f\)</span> from func space that contains all possible funcs, so they can be separated into pairs that can cancellate each other</p>
+<p>there must always exist a pair of f’s (<span class="math inline">\(f_a\)</span> and <span class="math inline">\(f_b\)</span>) that only differ on one instance <span class="math inline">\(x\)</span> which is not in <span class="math inline">\(S_j\)</span> (<span class="math inline">\(x\in P\)</span>)</p>
 <p>s.t.</p>
 <p><span class="math inline">\(\mathbf{1}[f_a(x)\neq A(S_j^a)(x)]+\mathbf{1}[f_b(x)\neq A(S_j^b)(x)]=1\)</span></p>
 <p>then the ave above actually is <span class="math inline">\(\frac{1}{4}\)</span></p>
@@ -108,14 +108,14 @@ D_i(x,y) = \begin{cases}
 <p><span class="math display">\[
 \max_{D,f}\mathbb{E}_{S\sim D^m}[L_{D,f}(A(S))]\ge 1/4
 \]</span></p>
-<p>use some prob inequality can give us the final conclusion that <span class="math inline">\(\exists D\)</span>
+<p>use some prob inequality can give us the conclusion that <span class="math inline">\(\exists D\)</span>
 <span class="math display">\[
 \mathbb{P}_{S\sim D^m}[L_D(A(S))\ge1/8]\ge1/7
 \]</span></p>
 <hr />
 <p>using the def, <span class="math inline">\(H\)</span> <strong>that contains every possible h is not PAC learnable</strong></p>
 <h2 id="bias-complexity-trade-off">bias-complexity trade-off</h2>
-<p>usually, we see bias-variance trade-off. I think there may be some connection, but I haven’t seen it</p>
+<p>Usually, we see a bias-variance trade-off. I think there may be some connection, but I haven’t seen it</p>
 <p>the idea is we divide the true risk as below</p>
 <p><span class="math display">\[
 \mathcal{L}_D(h)=\epsilon_{app}+\epsilon_{est}
@@ -126,9 +126,9 @@ D_i(x,y) = \begin{cases}
 <li><p><span class="math inline">\(\epsilon_{est}\)</span>, estimation error, it measures how well your learner can estimate the best h (<span class="math inline">\(\in H\)</span>) using ERM</p></li>
 </ul>
 <p>approx error has nothing to do with how you train with the dataset. if your hypothesis space is well enough (or large enough), it will be small</p>
-<p>est error is on the opposite. It really depends on the learner, sample size so on. it’s similar to the <span class="math inline">\(\epsilon\)</span> in the definition of agnostic PAC learnability. if your h space is too large (too complicated), then it will need more samples to decrease the est error.</p>
-<p>so, large <span class="math inline">\(|H|\)</span> will reduce approx error but it may be hard to have a small est error (overfitting), with high probability a tr set will cause a bad generalization ability</p>
-<p>on the contrary, small <span class="math inline">\(|H|\)</span> indeed will give us small est error, but will cause large approx error (underfitting)</p>
+<p>est error is on the opposite. It really depends on the learner, sample size so on. It’s similar to the <span class="math inline">\(\epsilon\)</span> in the definition of agnostic PAC learnability. If your h space is too large (too complicated), then it will need more samples to decrease the est error.</p>
+<p>so, large <span class="math inline">\(|H|\)</span> will reduce approx error, but it may be hard to have a small est error (overfitting), with a high probability a tr set will cause a bad generalization ability</p>
+<p>on the contrary, small <span class="math inline">\(|H|\)</span> indeed will give us a small est error but will cause a large approximate error (underfitting)</p>
 
 <hr>
 

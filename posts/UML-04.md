@@ -2,17 +2,18 @@
 title: Understanding Machine Learning 04
 author: Shiguang Wu
 date: 2022-03-16
+tag: UML
 ---
 
 ## No-Free-Lunch Theorem
 
-What is a *universal learner*? It means it doesn't need any prior knowledge. To be more specific, $\mathcal{H}$ that contains all possible functions is PAC-learnable. ? that is certainly not true, since this is about NFL theorem.
+What is a *universal learner*? It means it doesn't need any prior knowledge. To be more specific, $\mathcal{H}$ that contains all possible functions is PAC-learnable. ? that is certainly not true since this is about the NFL theorem.
 
 Typically, prior knowledge could be assumptions of knowing $\mathcal{D}$ comes from some family of distribution or assuming $\exists h\in\mathcal{H}$ that $L_D(h)$ is small enough.
 
 ### NFL theorem
 
-we consider binary classification prob and 0-1 loss over $\mathcal{X}$
+we consider binary classification problem and 0-1 loss over $\mathcal{X}$
 
 $m$ be the tr set size smaller than $\frac{|\mathcal{X}|}{2}$, A be any learner
 
@@ -20,7 +21,7 @@ there is a D that
 
 - there exists $f$, with zero error on $\mathcal{D}$
 
-- with prob of at least 1/7 over the choice of $S\sim \mathcal{D}^m$ we have the error of $A(S)\ge 1/8$
+- with a probability of at least 1/7 over the choice of $S\sim \mathcal{D}^m$ we have the error of $A(S)\ge 1/8$
 
 Let's prove this famous theorem!!!
 
@@ -28,11 +29,11 @@ Let's prove this famous theorem!!!
 
 let C be a subset of $\mathcal{X}$ with size 2m as the finite 'domain' we will consider
 
-the intuition is that since the learner can only see at most half of the domain set, we can then make the other part of distrib anything we want to defeat A
+the intuition is that since the learner can only see at most half of the domain set, we can then make the other part of distribution anything we want to defeat A
 
 we need to find the D and f
 
-there could be like $2^{2m}$ possible f's, we can prove that
+there could be like $2^{2m}$ possible f's; we can prove that
 
 $$
 \max_{D,f}\mathbb{E}_{S\sim D^m}[L_{D,f}(A(S))]\ge 1/4
@@ -65,7 +66,7 @@ $$
 
 here the $i$ in $S_j^i$ means the *label* is assigned by $D_i$, hence $f_i$
 
-we now convert the problem of finding the $f$ into finding $S_j^i$ that has a large error averaged on all functions. Intuitively, since we consider **all** functions, they must have some disagreement on the samples
+We now convert the problem of finding the $f$ into $S_j^i$ that has a significant error averaged on all functions. Intuitively, since we consider **all** functions, they must have some disagreement on the samples
 
 for $S_j^i$, we let $P=\{x_i\in C|x_i\notin S_j^i\}$ and $p=|P|$, where $p\ge m$
 
@@ -89,9 +90,9 @@ $$
 
 there are details here, note we have removed out the instances that are in $S_j$ (no $i$ here), that is because $\mathbf{1}[f_i(x)\neq A(S_j^i)(x)]$ will always be zero if $x\in S_j$ and we can certainly not consider them
 
-second, since we take $f$ from func space that contains all possible funcs, so they can actually be seperated into pairs that can cancellate each other
+second, since we take $f$ from func space that contains all possible funcs, so they can be separated into pairs that can cancellate each other
 
-there must always exist a pair of f's ($f_a$ and $f_b$), that only differ on one instance $x$ which is not in $S_j$ ($x\in P$)
+there must always exist a pair of f's ($f_a$ and $f_b$) that only differ on one instance $x$ which is not in $S_j$ ($x\in P$)
 
 s.t.
 
@@ -105,7 +106,7 @@ $$
 \max_{D,f}\mathbb{E}_{S\sim D^m}[L_{D,f}(A(S))]\ge 1/4
 $$
 
-use some prob inequality can give us the final conclusion that $\exists D$
+use some prob inequality can give us the conclusion that $\exists D$
 $$
 \mathbb{P}_{S\sim D^m}[L_D(A(S))\ge1/8]\ge1/7
 $$
@@ -116,7 +117,7 @@ using the def, $H$ **that contains every possible h is not PAC learnable**
 
 ## bias-complexity trade-off
 
-usually, we see bias-variance trade-off. I think there may be some connection, but I haven't seen it
+Usually, we see a bias-variance trade-off. I think there may be some connection, but I haven't seen it
 
 the idea is we divide the true risk as below
 
@@ -132,8 +133,8 @@ where $\epsilon_{app}=\min_{h'\in H}L_D(h')$ and $\epsilon_{est}=\mathcal{L}_D(h
 
 approx error has nothing to do with how you train with the dataset. if your hypothesis space is well enough (or large enough), it will be small
 
-est error is on the opposite. It really depends on the learner, sample size so on. it's similar to the $\epsilon$ in the definition of agnostic PAC learnability. if your h space is too large (too complicated), then it will need more samples to decrease the est error.
+est error is on the opposite. It really depends on the learner, sample size so on. It's similar to the $\epsilon$ in the definition of agnostic PAC learnability. If your h space is too large (too complicated), then it will need more samples to decrease the est error.
 
-so, large $|H|$ will reduce approx error but it may be hard to have a small est error (overfitting), with high probability a tr set will cause a bad generalization ability
+so, large $|H|$ will reduce approx error, but it may be hard to have a small est error (overfitting), with a high probability a tr set will cause a bad generalization ability
 
-on the contrary, small $|H|$ indeed will give us small est error, but will cause large approx error (underfitting)
+on the contrary, small $|H|$ indeed will give us a small est error but will cause a large approximate error (underfitting)
