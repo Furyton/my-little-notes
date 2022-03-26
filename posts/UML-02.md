@@ -2,7 +2,7 @@
 title: Understanding Machine Learning 02
 author: Shiguang Wu
 date: 2022-03-08
-tag: UML
+tags: UML
 ---
 
 ## def PAC

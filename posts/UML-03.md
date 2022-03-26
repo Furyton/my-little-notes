@@ -2,7 +2,7 @@
 title: Understanding Machine Learning 03
 author: Shiguang Wu
 date: 2022-03-11
-tag: UML
+tags: UML
 ---
 
 ## Uniform Convergence

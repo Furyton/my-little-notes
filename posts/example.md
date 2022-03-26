@@ -2,7 +2,7 @@
 title: my first post
 author: furyton
 date: 2022-03-01
-tag: test
+tags: test
 ---
 
 This is a test for the $\LaTeX$ rendering.

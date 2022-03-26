@@ -2,7 +2,7 @@
 title: Understanding Machine Learning 05
 author: Shiguang Wu
 date: 2022-03-21
-tag: UML
+tags: UML
 ---
 
 ## VCdim
@@ -173,12 +173,11 @@ I'll add the proof when I master this math skill :(
   3. show that $H_{con}$ shatters $\{e_i:i\le d\}$, seems easy
 
   4. show that $VCdim(H)\le d$. if $d+1$, consider hypothesis
-    $
-      h_i(c_j) = \begin{cases}
+    $h_i(c_j) = \begin{cases}
         0 &\text{if } i=j \\
         1 &\text{otherwise}
-      \end{cases}
-    $. that means each $c_i$ has at least one bit that is different from others, which is a contradiction
+      \end{cases}$
+    .that means each $c_i$ has at least one bit that is different from others, which is a contradiction
 
   5. $H_{mcond}^d$ which do not contain negations, empty conjunction is considered as all positive, the vc dim of $H_{mcond}^d$ with all negative h =d. first $VCdim(H_{mcond})\le d$. consider $x_i$ is all one but zero at index i, $i\le d$
 

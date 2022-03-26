@@ -2,7 +2,7 @@
 title: Understanding Machine Learning 04
 author: Shiguang Wu
 date: 2022-03-16
-tag: UML
+tags: UML
 ---
 
 ## No-Free-Lunch Theorem

@@ -2,7 +2,7 @@
 title: The elements of statistical learning 01
 author: Shiguang Wu
 date: 2022-03-07
-tag: ESL
+tags: ESL
 ---
 
 ## boosting

@@ -2,7 +2,7 @@
 title: Understanding Machine Learning 01
 date: 2022-03-03
 author: Shiguang Wu
-tag: UML
+tags: UML
 ---
 
 ## formal def

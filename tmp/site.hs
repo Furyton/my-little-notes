@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid     ((<>))
+import           Data.Monoid (mappend)
 import           Hakyll
 import           Slug
 import           Data.Maybe
@@ -8,13 +8,13 @@ import qualified Data.Set as S
 import qualified Data.Text as T
 import           Text.Pandoc.Options
 import           Text.Pandoc.Extensions
-import           Text.Pandoc.Highlighting
-
+import           Text.Pandoc.Highlighting 
 --------------------------------------------------------------------------------
--- | Entry point
+config :: Configuration
+config = defaultConfiguration{ destinationDirectory = "docs"}
+
 main :: IO ()
 main = hakyllWith config $ do
-    -- Static files
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
@@ -29,68 +29,50 @@ main = hakyllWith config $ do
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
-    -- Build tags
-    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
-
-    -- Render each and every post
     match "posts/*" $ do
-        route   $ metadataRoute titleRoute
+        route $ metadataRoute titleRoute
         compile $ pandocCompiler_
-                >>= loadAndApplyTemplate "templates/post.html" (postCtx tags)
-                -- >>= loadAndApplyTemplate "templates/content.html" defaultContext
-                >>= loadAndApplyTemplate "templates/default.html" defaultContext
-                >>= relativizeUrls
+            >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= loadAndApplyTemplate "templates/default.html" postCtx
+            >>= relativizeUrls
 
-    -- Post tags
-    tagsRules tags $ \tag pattern -> do
-        let title = "Posts tagged " ++ tag
+    -- create ["archive.html"] $ do
+    --     route idRoute
+    --     compile $ do
+    --         posts <- recentFirst =<< loadAll "posts/*"
+    --         let archiveCtx =
+    --                 listField "posts" postCtx (return posts) `mappend`
+    --                 constField "title" "Archives"            `mappend`
+    --                 defaultContext
 
-        -- Copied from posts, need to refactor
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll pattern
-            let ctx = constField "title" title <>
-                        listField "posts" (postCtx tags) (return posts) <>
-                        defaultContext
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/tag.html" ctx
-                -- >>= loadAndApplyTemplate "templates/content.html" ctx
-                >>= loadAndApplyTemplate "templates/default.html" ctx
-                >>= relativizeUrls
+    --         makeItem ""
+    --             >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+    --             >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+    --             >>= relativizeUrls
 
-    -- Index
+
     match "index.html" $ do
         route idRoute
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
-            let indexContext =
-                    listField "posts" (postCtx tags) (return posts) <>
-                    field "tags" (\_ -> renderTagList tags) <>
+            let indexCtx =
+                    listField "posts" postCtx (return posts) `mappend`
+                    constField "title" "Home"                `mappend`
                     defaultContext
 
             getResourceBody
-                >>= applyAsTemplate indexContext
-                -- >>= loadAndApplyTemplate "templates/content.html" indexContext
-                >>= loadAndApplyTemplate "templates/default.html" indexContext
+                >>= applyAsTemplate indexCtx
+                >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
 
-    -- Read templates
     match "templates/*" $ compile templateCompiler
 
+
 --------------------------------------------------------------------------------
-postCtx :: Tags -> Context String
-postCtx tags = mconcat
-    [ dateField "date" "%B %e, %Y"
-    , tagsField "tags" tags
-    , Context $ \key -> case key of
-        "title" -> unContext (mapContext escapeHtml defaultContext) key
-        _       -> unContext mempty key
-    , defaultContext
-    ]
-
-
-config :: Configuration
-config = defaultConfiguration{ destinationDirectory = "docs"}
+postCtx :: Context String
+postCtx =
+    dateField "date" "%B %e, %Y" `mappend`
+    defaultContext
 
 pandocCompiler_ :: Compiler (Item String)
 pandocCompiler_ =
@@ -100,7 +82,7 @@ pandocCompiler_ =
         , Ext_tex_math_double_backslash
         , Ext_latex_macros
         ]
-    codeExtensions =
+    codeExtensions = 
         [ Ext_fenced_code_blocks
         , Ext_backtick_code_blocks
         , Ext_fenced_code_attributes
