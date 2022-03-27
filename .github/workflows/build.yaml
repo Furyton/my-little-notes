@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  
+  workflow_dispatch:
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{secrets.PAT}}
+      
+      - name: build
+        run: |
+          git config --global user.email "1543159426@qq.com"
+          git config --global user.name "Furyton"
+          
+          ls
+          mkdir ex
+          cd ex
+          git clone https://gitee.com/furyton/mynotes.git
+          cp mynotes/mynotes ../
+          cd ..
+          ./mynotes rebuild
+      
+      - name: deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: docs
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        
+      
