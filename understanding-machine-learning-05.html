@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Notes - Understanding Machine Learning 05</title>
+        
+            <meta name="author" content="Shiguang Wu">
+        
+        
+        <link rel="shortcut icon" type="image/x-icon" href="./images/captain-america-shield.jpg" />
+        <link rel="stylesheet" href="./css/default.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/blog.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+    
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="./">My back yard</a>
+            </div>
+            <div id="navigation">
+                <a href="./">Home</a>
+                <!-- <a href="/archive.html">Archive</a> -->
+                <a href="./about.html">About</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Understanding Machine Learning 05</h1>
+
+            <div class="info">
+    Posted on March 21, 2022
+    
+        by Shiguang Wu
+    
+</div>
+<div class="info">
+    
+    Tags: <a title="All pages tagged 'UML'." href="./tags/UML.html">UML</a>
+    
+</div>
+
+<h2 id="vcdim">VCdim</h2>
+<p>here we go to one of the famous theories, the VC dimension</p>
+<p>before going a little deeper, we will have a look at the motivation</p>
+<h3 id="motivation">motivation</h3>
+<p>first, finite is not a sufficient and necessary condition of PAC learnability. <a href="./understanding-machine-learning-02.html">exercise 3.3</a> is a simple example. Moreover, in the <a href="./understanding-machine-learning-04.html">last post</a> (No-Free-Lunch theorem), we have seen H that contains all possible functions is not PAC learnable. When we rethink the proof, we may notice that the construction of set <span class="math inline">\(C\)</span> is the key point. Since we are considering <strong>all</strong> possible functions, the error of different f’s can cancel, resulting in a large error.</p>
+<p>borrow the idea, if we can find a subset <span class="math inline">\(C\)</span> of domain <span class="math inline">\(\mathcal{X}\)</span>, and if H contains all the functions when taking <span class="math inline">\(C\)</span> as the domain, then it will cause a considerable risk using the same proof</p>
+<p>further, if such kind of <span class="math inline">\(C\)</span> is infinitely large, then <span class="math inline">\(H\)</span> is not learnable</p>
+<p>the thoughts above give us the basic idea of how the VC dimension comes</p>
+<h3 id="vc-dimension">VC dimension</h3>
+<hr />
+<p>Def. restriction of H to C</p>
+<p>here, <span class="math inline">\(\mathcal{C}=\{c_1,c_2,\dots,c_m\}\subseteq\mathcal{X}\)</span></p>
+<p>and <span class="math inline">\(\mathcal{H}_C=\{h(c_1),\dots,h(c_m)\}\)</span></p>
+<hr />
+<p>Def. Shattering</p>
+<p>H shatters C <span class="math inline">\(\iff\)</span> <span class="math inline">\(|H_C|=2^{|C|}\)</span></p>
+<hr />
+<p>Def. VC-dimension</p>
+<p>the VC-dimension of H <span class="math inline">\(\coloneq\max_C\{|H_C|:\text{H shatters C}\}\)</span></p>
+<hr />
+<p>a simple method to show VCdim=d we need to show that</p>
+<ol type="1">
+<li><p><span class="math inline">\(\exists C\)</span> of size d that is shattered by H</p></li>
+<li><p><strong>every</strong> C of size d+1 is not shattered by H</p></li>
+</ol>
+<hr />
+<p>since <span class="math inline">\(2^{|VCdim(H)|}\le |H|\)</span>, we have a loose upper bound of VC dim which is <span class="math inline">\(log_2(|H|)\)</span></p>
+<h2 id="fundamental-theorem-of-pac-learning">fundamental theorem of PAC learning</h2>
+<p>the followings are eq</p>
+<ol type="1">
+<li><p>uniform convergence</p></li>
+<li><p>PAC learnable on every ERM learner</p></li>
+<li><p>agnostic PAC learnable on every ERM learner</p></li>
+<li><p>finite VC dimension</p></li>
+</ol>
+<hr />
+<p>from 4. to 1. is non-trivial. here we will go deeper into that</p>
+<p>we need to find <span class="math inline">\(m_H^U\)</span> s.t. for any S that <span class="math inline">\(|S|\ge m_H^U\)</span> is <span class="math inline">\(\frac{\epsilon}{2}\)</span>-representative (i.e. <span class="math inline">\(L_D(h)-L_S(h)|\le \frac{\epsilon}{2}\)</span>)</p>
+<p>intuitively, if <span class="math inline">\(m\)</span> is larger than <span class="math inline">\(d\)</span>, where <span class="math inline">\(d\)</span> is the VC dimension, <span class="math inline">\(H_C\)</span> will only take small part of <span class="math inline">\(2^C\)</span> (in fact that is polynomial large w.r.t. <span class="math inline">\(|C|\)</span>), the estimation error could be bounded by <span class="math inline">\(o(m)\)</span></p>
+<h3 id="sauers-lemma">Sauer’s Lemma</h3>
+<hr />
+<p>Def. Growth Function</p>
+<p><span class="math display">\[\tau_H(m)=\max_{C\subset \mathcal{X}:|C|=m}|H_C|.\]</span></p>
+<hr />
+<p>according to Sauer’s lemma, <span class="math inline">\(\tau_H(m)\le \sum_{i=0}^d\tbinom{n}{i}\)</span>, if <span class="math inline">\(m\gt d+1\)</span>, we have a looser but neat form <span class="math inline">\(\tau_H(m)\ge (em/d)^d\)</span></p>
+<h4 id="proof">proof</h4>
+<p>basic idea</p>
+<p>we prove a stronger claim, <span class="math inline">\(\forall C=\{c_1,\dots,c_m\}\)</span></p>
+<p>we have <span class="math inline">\(\forall H,\ |H_C|\le |\{B\subseteq C: \text{H shatters B}\}|\)</span></p>
+<p>induction on m</p>
+<p>when m=1, both sides are equal</p>
+<p>when m=k+1, suppose the claim holds for <span class="math inline">\(m\le k\)</span>.</p>
+<p>to use the claim, we need to split <span class="math inline">\(C\)</span> as <span class="math inline">\(\{c_1\}\)</span> and ${c_1,, c_m} which is denoted as <span class="math inline">\(C'\)</span></p>
+<p>we need to find such <span class="math inline">\(H'\)</span> that can naturally convert from <span class="math inline">\(C'\)</span> to <span class="math inline">\(C\)</span> but still holds the shattering property</p>
+<p>note:</p>
+<p><span class="math display">\[
+H_C=H_{C'}\oplus H'_{C'}
+\]</span></p>
+<p>where <span class="math inline">\(H'_{C'}=\{\exists f(c_1)=1\land g(c_1)=0\land f_{C'}=g_{C'}, \text{ where }f,g\in H\}\)</span>, <span class="math inline">\(\oplus\)</span> means direct sum (<span class="math inline">\(H_{C'}\cap H'_{C'}=\emptyset\)</span>)</p>
+<hr />
+<p>if <span class="math inline">\(f_{C'}\)</span> and <span class="math inline">\(g_{C'}\)</span> are exactly the same, they represent the <strong>same</strong> function in <span class="math inline">\(H_{C'}\)</span>, and hence only count once in <span class="math inline">\(H_{C'}\)</span> which should be treated separatedly in <span class="math inline">\(H_C\)</span>.</p>
+<hr />
+<p>so we have that</p>
+<p><span class="math display">\[
+\begin{aligned}
+    |H_C|&amp;=|H_{C'}|+|H'_{C'}|\\
+    &amp;\le |\{B\subseteq C':\text{H shatters B}\}|+|\{B\subseteq C':\text{H' shatters B}\}|
+\end{aligned}
+\]</span></p>
+<p>note that <span class="math inline">\(H'\)</span> shatters B <span class="math inline">\(\iff\)</span> H shatters <span class="math inline">\(\{c_1\}+B\)</span></p>
+<p>so RHS <span class="math inline">\(\le |\{B\subseteq C:\text{H shatters B}\}|\)</span> <span class="math inline">\(\blacksquare\)</span></p>
+<h3 id="uniform-convergence">uniform convergence</h3>
+<p>we will give the upper bound without proof :(</p>
+<p>for every <span class="math inline">\(\delta\)</span>, with prob <span class="math inline">\(1-\delta\)</span> over the choice of <span class="math inline">\(S\sim D^m\)</span></p>
+<p><span class="math display">\[
+|L_D(h)-L_S(h)|\le \frac{4+\sqrt{log(\tau_H(2m))}}{\delta \sqrt{2m}}
+\]</span></p>
+<p>RHS <span class="math inline">\(\in o(m)\)</span></p>
+<hr />
+<p>I’ll add the proof when I master this math skill :(</p>
+<h2 id="exercise">exercise</h2>
+<ul>
+<li><p>6.1. monotonicity of VC dim</p></li>
+<li><p>6.2. finite X, <span class="math inline">\(k\lt |\mathcal{X}|\)</span>, compute the VC dim</p>
+<ul>
+<li><p><span class="math inline">\(H_{=k}^\mathcal{X}=\{h\in \{0,1\}^\mathcal{X}:|x:h(x)=1|=k\}\)</span>. VC dim=<span class="math inline">\(\min\{k,|\mathcal{X}|-k\}\)</span>, otherwise you can’t assign all one (zero) to these instances</p></li>
+<li><p><span class="math inline">\(H_{\text{at most k}}^\mathcal{X}=\{|x:h(x)=1|\le k \text{ or }|x:h(x)=0|\le k\}\)</span>. VC dim=k.</p></li>
+</ul></li>
+<li><p>6.3. parity function <span class="math inline">\(h_I\)</span> (h computes the parity of bits at <span class="math inline">\(I\)</span> ). finte H, <span class="math inline">\(d\le n\)</span>, and easy to construct such <span class="math inline">\(C\)</span> that <span class="math inline">\(|C|=n\)</span></p></li>
+<li><p>6.4. skip</p></li>
+<li><p>6.5. The VC dim of axis-aligned rectangles in d-dim is 2d. Since we need 2d points to construct a rectangle that assigns all points as one if there are 2d+1 points, one of them must stay inside the box (or lie on the border with no points in the box). With that point assigned as zero, others assigned as one, no function will satisfy</p></li>
+<li><p>6.6. VC-dimension of Boolean conjuntions <span class="math inline">\(H_{con}^d\)</span>: <span class="math inline">\(f(x)=x_{i_1}\land \dots \land x_{i_k}\)</span></p>
+<ol type="1">
+<li><p>prove <span class="math inline">\(|H_{con}^d|\le 3^d + 1\)</span>. each <span class="math inline">\(x_i\)</span> has three states, not chosen, origin <span class="math inline">\(x_i\)</span>, inverse <span class="math inline">\(\bar{x}_i\)</span>, so should be <span class="math inline">\(= 3^d\)</span> ??</p></li>
+<li><p>prove <span class="math inline">\(VCdim(H)\le d log 3\)</span>. <span class="math inline">\(VDdim\le log(|H|)=dlog3\)</span></p></li>
+<li><p>show that <span class="math inline">\(H_{con}\)</span> shatters <span class="math inline">\(\{e_i:i\le d\}\)</span>, seems easy</p></li>
+<li><p>show that <span class="math inline">\(VCdim(H)\le d\)</span>. if <span class="math inline">\(d+1\)</span>, consider hypothesis
+<span class="math inline">\(h_i(c_j) = \begin{cases}  0 &amp;\text{if } i=j \\  1 &amp;\text{otherwise}  \end{cases}\)</span>
+.that means each <span class="math inline">\(c_i\)</span> has at least one bit that is different from others, which is a contradiction</p></li>
+<li><p><span class="math inline">\(H_{mcond}^d\)</span> which do not contain negations, empty conjunction is considered as all positive, the vc dim of <span class="math inline">\(H_{mcond}^d\)</span> with all negative h =d. first <span class="math inline">\(VCdim(H_{mcond})\le d\)</span>. consider <span class="math inline">\(x_i\)</span> is all one but zero at index i, <span class="math inline">\(i\le d\)</span></p></li>
+</ol></li>
+<li><p>6.7. skip</p></li>
+<li><p>6.8. show vcdim of <span class="math inline">\(H=\{x\mapsto \lceil sin(\theta x) \rceil: \theta \in \R\}\)</span> is infinity.</p>
+<ul>
+<li><p><em>hint</em>: if <span class="math inline">\(0.x_1x_2x_3\dots\)</span> is the binary expansion of <span class="math inline">\(x\in (0,1)\)</span>, then for any natual number m, <span class="math inline">\(\lceil sin(2^m\pi x) \rceil =(1-x_m)\)</span>, provided that <span class="math inline">\(\exist k\ge m\)</span> s.t. <span class="math inline">\(x_k=1\)</span>.</p></li>
+<li><p>with the hint, that is easy. Just construct a huge matrix with each row representing a binary expansion of <span class="math inline">\(x_i\)</span> and the columns running through all possible combinations.</p></li>
+</ul></li>
+<li><p>6.9. skip</p></li>
+<li><p>6.10. skip</p></li>
+<li><p>6.11. VC of union. <span class="math inline">\(H_1,\dots,H_r\)</span>.</p></li>
+<li><p>6.12. Dudley classes.</p>
+<ol type="1">
+<li><p><span class="math inline">\(VCdim(POS(\mathcal{F}+g))=VCdim(POS(\mathcal{F}))\)</span>. “<span class="math inline">\(\Rightarrow\)</span>”, <span class="math inline">\((f_1+g)-(f_2+g)\)</span>.</p></li>
+<li><p><span class="math inline">\(VCdim(POS(\mathcal{F}))=\dim(\mathcal{F})\)</span>. half space, full rank, bla bla bla</p></li>
+<li><p>examples of Dudley classes</p></li>
+</ol></li>
+</ul>
+<p>btw, Dudley class seems to be a fascinating and important topic</p>
+
+<hr>
+
+<nav class="info">
+    <a href="./">Home</a>
+    <a href="mailto:furyton@outlook.com">Email Me</a>
+</nav>
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>, this site project is located at <a href="https://github.com/Furyton/my-little-notes">Github</a>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Notes - The elements of statistical learning 01</title>
+        
+            <meta name="author" content="Shiguang Wu">
+        
+        
+        <link rel="shortcut icon" type="image/x-icon" href="./images/captain-america-shield.jpg" />
+        <link rel="stylesheet" href="./css/default.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/blog.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+    
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="./">My back yard</a>
+            </div>
+            <div id="navigation">
+                <a href="./">Home</a>
+                <!-- <a href="/archive.html">Archive</a> -->
+                <a href="./about.html">About</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>The elements of statistical learning 01</h1>
+
+            <div class="info">
+    Posted on March  7, 2022
+    
+        by Shiguang Wu
+    
+</div>
+<div class="info">
+    
+    Tags: <a title="All pages tagged 'ESL'." href="./tags/ESL.html">ESL</a>
+    
+</div>
+
+<h2 id="boosting">boosting</h2>
+<p>committee from a bunch of weak learners<span class="math inline">\(G_m\)</span>(slightly better than rand)</p>
+<p><span class="math display">\[
+G(x)=sign\left(\sum_{m=1}^Ma_mG_m(x)\right)
+\]</span></p>
+<p>one generic method is forward-stagewise method where you compute one model <span class="math inline">\(G_m\)</span> and its correspd weight <span class="math inline">\(a_m\)</span> at a time (min <span class="math inline">\(L(y_i, f_m(x_i)+\beta G_m(x_i))\)</span>).</p>
+<p>if using MSE as the <span class="math inline">\(L\)</span> loss, each time we are seeking for a model <span class="math inline">\(\beta G\)</span> that fit the residual.</p>
+<h3 id="adaboost.m1">AdaBoost.M1</h3>
+<p>iteratively fit <span class="math inline">\(G_m\)</span> on a weighted dataset.</p>
+<p>method derived by using <strong>exp loss</strong> instead of the common mse ..</p>
+<p><span class="math display">\[e^{-y_if(x_i)}\]</span></p>
+<p>suppose we consider scaled model (<span class="math inline">\(range f=\{-1,1\}\)</span>)</p>
+<p>at stage m</p>
+<p>we want to opt the following</p>
+<p><span class="math display">\[
+\min_{(a,G)}\sum_{i=1}^Nexp\left(-y_i(f_{m-1}(x_i)+aG(x_i))\right)\\
+=\sum w_iexp(-y_iaG(x_i))
+\]</span></p>
+<p>basically using forward-stagewise method, if we fix <span class="math inline">\(a\)</span></p>
+<p><span class="math display">\[
+exp(a)\sum_{y_i\neq G(x_i)}w_i+exp(-a)\sum_{y_i=G(x_i)}w_i\\
+=exp(a)\sum_i^N w_i - exp(a)\sum_{y_i=G(x_i)}w_i+\dots\\
+=(exp(-a)-exp(a))\sum_{y_i=G(x_i)} w_i + exp(a)\sum_i^Nw_i\\
+=A\sum_i^Nw_i[y_i\neq G(x_i)]+\dots
+\]</span></p>
+<p>so actually, we are minimizing a weighted dataset using 0-1 loss</p>
+<p>with this new solved <span class="math inline">\(G\)</span>, we can then solve for <span class="math inline">\(a\)</span></p>
+<p><span class="math display">\[
+\frac{d \sum w_iexp(-aG(x_i))}{da}=-\sum w_iy_iG(x_i)exp(-ay_iG(x_i))\\
+=-(exp(-a)+exp(a))\sum_{y_i=G(x_i)} w_i + exp(a)\sum_i^Nw_i=0
+\]</span></p>
+<p>in short, AdaBoost.M1 is directly abtained from forward-stagewise method. With exp loss, we can get this neat sol.</p>
+<p>further, since <span class="math inline">\(f_m=f_{m-1}+G_m\)</span>, the weights <span class="math inline">\(w_i\)</span> can be calculated iteratively.</p>
+<h4 id="more-about-exp-loss">more about exp loss</h4>
+<ul>
+<li><p><span class="math inline">\(f^\star=arg \min_fE_{Y|x}(e^{-Yf(x)})=\frac{1}{2}log\frac{Pr(Y=1|x)}{Pr(Y=-1|x)}\)</span>, it est one half the log odds of <span class="math inline">\(Pr(Y=1|x)\)</span>, and <span class="math inline">\(Pr(Y=1|x)=\frac{1}{1+e^{-2f}}\)</span></p></li>
+<li><p>let <span class="math inline">\(p(x)=Pr(Y=1|x)=\frac{1}{1+e^{-2f}}\)</span> and <span class="math inline">\(Y^\prime =(Y+1)/2\)</span>, we can see that cross-entropy and exp loss are actually est the same population.</p>
+<ul>
+<li><p>ce: <span class="math inline">\(-l(Y,f(x))=log(1+e^{-2Yf(x)})=Y^\prime logp(x)+(1-Y^\prime)log(1-p(x))\)</span>, (f is softmaxed before output)</p></li>
+<li><p>exp: <span class="math inline">\(e^{-Yf}\)</span></p></li>
+<li><p>same Pr, and f</p></li>
+</ul></li>
+</ul>
+<h3 id="loss-func-and-robustness">loss func and robustness</h3>
+<p>here robustness means being disturbed less by outlier samples.</p>
+<h4 id="regression">regression</h4>
+<ul>
+<li><p>squared-error -&gt; <span class="math inline">\(f(x)=\mathbf{E}(Y|x)\)</span>, more focus on obs with large absolute residuals during fitting process, <strong>far less</strong> robust, bad on long-tailed error distrb, gross outliers</p></li>
+<li><p>absolute loss -&gt; median</p></li>
+<li><p>Huber loss. <span class="math inline">\([y-f(x)]^2 \text{ for abs residual } \leq \delta \text{ and } 2\delta|y-f(x)|-\delta^2 \text{ otherwise }\)</span></p></li>
+</ul>
+<figure>
+<img src="./images/reg_loss_and_rob.png" alt="loss and robustness on regression prob" />
+<figcaption aria-hidden="true">loss and robustness on regression prob</figcaption>
+</figure>
+<h4 id="classification">classification</h4>
+<p>we consider two-class classification problem</p>
+<p>in regression problem, <span class="math inline">\(y-f(x)\)</span> is considered as the margin</p>
+<p>in classif.., <span class="math inline">\(yf(x)\)</span> plays the same role. where <span class="math inline">\(y\in\{-1,1\}\)</span></p>
+<figure>
+<img src="./images/loss_and_robustness.png" alt="Loss functions for two-class classification." />
+<figcaption aria-hidden="true">Loss functions for two-class classification.</figcaption>
+</figure>
+<h4 id="conclusion">conclusion</h4>
+<p>squared-error, and exp loss are not robust, but give rise to simple boosting algorithms.</p>
+<h2 id="specific-boosting-example">specific boosting example</h2>
+<h3 id="boosting-tree">boosting tree</h3>
+<p>region <span class="math inline">\(R_j,\, j=1,\dots,J\)</span></p>
+<p><span class="math inline">\(x\in R_j\Rightarrow f(x)=y_j\)</span></p>
+
+<hr>
+
+<nav class="info">
+    <a href="./">Home</a>
+    <a href="mailto:furyton@outlook.com">Email Me</a>
+</nav>
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>, this site project is located at <a href="https://github.com/Furyton/my-little-notes">Github</a>
+        </div>
+    </body>
+</html>

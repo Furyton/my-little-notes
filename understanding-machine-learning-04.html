@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Notes - Understanding Machine Learning 04</title>
+        
+            <meta name="author" content="Shiguang Wu">
+        
+        
+        <link rel="shortcut icon" type="image/x-icon" href="./images/captain-america-shield.jpg" />
+        <link rel="stylesheet" href="./css/default.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/blog.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+    
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="./">My back yard</a>
+            </div>
+            <div id="navigation">
+                <a href="./">Home</a>
+                <!-- <a href="/archive.html">Archive</a> -->
+                <a href="./about.html">About</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Understanding Machine Learning 04</h1>
+
+            <div class="info">
+    Posted on March 16, 2022
+    
+        by Shiguang Wu
+    
+</div>
+<div class="info">
+    
+    Tags: <a title="All pages tagged 'UML'." href="./tags/UML.html">UML</a>
+    
+</div>
+
+<h2 id="no-free-lunch-theorem">No-Free-Lunch Theorem</h2>
+<p>What is a <em>universal learner</em>? It means it doesn’t need any prior knowledge. To be more specific, <span class="math inline">\(\mathcal{H}\)</span> that contains all possible functions is PAC-learnable. ? that is certainly not true since this is about the NFL theorem.</p>
+<p>Typically, prior knowledge could be assumptions of knowing <span class="math inline">\(\mathcal{D}\)</span> comes from some family of distribution or assuming <span class="math inline">\(\exists h\in\mathcal{H}\)</span> that <span class="math inline">\(L_D(h)\)</span> is small enough.</p>
+<h3 id="nfl-theorem">NFL theorem</h3>
+<p>we consider binary classification problem and 0-1 loss over <span class="math inline">\(\mathcal{X}\)</span></p>
+<p><span class="math inline">\(m\)</span> be the tr set size smaller than <span class="math inline">\(\frac{|\mathcal{X}|}{2}\)</span>, A be any learner</p>
+<p>there is a D that</p>
+<ul>
+<li><p>there exists <span class="math inline">\(f\)</span>, with zero error on <span class="math inline">\(\mathcal{D}\)</span></p></li>
+<li><p>with a probability of at least 1/7 over the choice of <span class="math inline">\(S\sim \mathcal{D}^m\)</span> we have the error of <span class="math inline">\(A(S)\ge 1/8\)</span></p></li>
+</ul>
+<p>Let’s prove this famous theorem!!!</p>
+<hr />
+<p>let C be a subset of <span class="math inline">\(\mathcal{X}\)</span> with size 2m as the finite ‘domain’ we will consider</p>
+<p>the intuition is that since the learner can only see at most half of the domain set, we can then make the other part of distribution anything we want to defeat A</p>
+<p>we need to find the D and f</p>
+<p>there could be like <span class="math inline">\(2^{2m}\)</span> possible f’s; we can prove that</p>
+<p><span class="math display">\[
+\max_{D,f}\mathbb{E}_{S\sim D^m}[L_{D,f}(A(S))]\ge 1/4
+\]</span></p>
+<p>which means there exists some bad f that will make A fail</p>
+<p>note D and f should be matched, so we construct <span class="math inline">\(D_i\)</span> as follows for each <span class="math inline">\(f_i\)</span>, <span class="math inline">\(i=1\dots T\)</span> where <span class="math inline">\(T=2^{2m}\)</span></p>
+<p><span class="math display">\[
+D_i(x,y) = \begin{cases}
+            1/|C| &amp;\text{if } f_i(x)=y \\
+            0 &amp;\text{otherwise}
+           \end{cases}
+\]</span></p>
+<p>since <span class="math inline">\(C\)</span> is finite, we can enumerate all S</p>
+<p>denote as <span class="math inline">\(S_i\)</span>, <span class="math inline">\(i=1\dots M\)</span> where <span class="math inline">\(M=(2m)^m\)</span>, note instances in S can be duplicated</p>
+<p><span class="math display">\[
+\begin{aligned}
+   &amp;\max_i\mathbb{E}_{S\sim D_i}[L_{D_i}(A(S))]\\
+   &amp;=\frac{1}{M}\max_i\sum_j^ML_{D_i}(A(S_j^i))\\
+   &amp;\ge\frac{1}{MT}\sum_i^T\sum_j^ML_{D_i}(A(S_j^i))\\
+   &amp;=\frac{1}{TM}\sum_j^M\sum_i^TL_{D_i}(A(S_j^i))\\
+   &amp;\ge\frac{1}{T}\min_j\sum_{i}^{T}L_{D_i}(A(S_j^i))
+\end{aligned}
+\]</span></p>
+<p>here the <span class="math inline">\(i\)</span> in <span class="math inline">\(S_j^i\)</span> means the <em>label</em> is assigned by <span class="math inline">\(D_i\)</span>, hence <span class="math inline">\(f_i\)</span></p>
+<p>We now convert the problem of finding the <span class="math inline">\(f\)</span> into <span class="math inline">\(S_j^i\)</span> that has a significant error averaged on all functions. Intuitively, since we consider <strong>all</strong> functions, they must have some disagreement on the samples</p>
+<p>for <span class="math inline">\(S_j^i\)</span>, we let <span class="math inline">\(P=\{x_i\in C|x_i\notin S_j^i\}\)</span> and <span class="math inline">\(p=|P|\)</span>, where <span class="math inline">\(p\ge m\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+    &amp;L_{D_i}(A(S_j^i))\\
+    =&amp;\frac{1}{2m}\sum_k^{2m}\mathbf{1}[f_i(x_k)\neq A(S_j^i)(x_k)]\\
+    \ge&amp;\frac{1}{2p}\sum_{x\in P}\mathbf{1}[f_i(x)\neq A(S_j^i)(x)]\\
+\end{aligned}
+\]</span></p>
+<p>then</p>
+<p><span class="math display">\[
+\begin{aligned}
+    &amp;\frac{1}{T}\sum_{i}^{T}L_{D_i}(A(S_j^i))\\
+    \ge&amp;\frac{1}{T}\sum_i^T\frac{1}{2p}\sum_{x\in P}\mathbf{1}[f_i(x)\neq A(S_j^i)(x)]\\
+    =&amp;\frac{1}{2}*\frac{1}{p}\sum_{x\in P}\frac{1}{T}\sum_{i}^{T}\mathbf{1}[f_i(x)\neq A(S_j^i)(x)]\\
+\end{aligned}
+\]</span></p>
+<p>there are details here, note we have removed out the instances that are in <span class="math inline">\(S_j\)</span> (no <span class="math inline">\(i\)</span> here), that is because <span class="math inline">\(\mathbf{1}[f_i(x)\neq A(S_j^i)(x)]\)</span> will always be zero if <span class="math inline">\(x\in S_j\)</span> and we can certainly not consider them</p>
+<p>second, since we take <span class="math inline">\(f\)</span> from func space that contains all possible funcs, so they can be separated into pairs that can cancellate each other</p>
+<p>there must always exist a pair of f’s (<span class="math inline">\(f_a\)</span> and <span class="math inline">\(f_b\)</span>) that only differ on one instance <span class="math inline">\(x\)</span> which is not in <span class="math inline">\(S_j\)</span> (<span class="math inline">\(x\in P\)</span>)</p>
+<p>s.t.</p>
+<p><span class="math inline">\(\mathbf{1}[f_a(x)\neq A(S_j^a)(x)]+\mathbf{1}[f_b(x)\neq A(S_j^b)(x)]=1\)</span></p>
+<p>then the ave above actually is <span class="math inline">\(\frac{1}{4}\)</span></p>
+<p>now we have proved that</p>
+<p><span class="math display">\[
+\max_{D,f}\mathbb{E}_{S\sim D^m}[L_{D,f}(A(S))]\ge 1/4
+\]</span></p>
+<p>use some prob inequality can give us the conclusion that <span class="math inline">\(\exists D\)</span>
+<span class="math display">\[
+\mathbb{P}_{S\sim D^m}[L_D(A(S))\ge1/8]\ge1/7
+\]</span></p>
+<hr />
+<p>using the def, <span class="math inline">\(H\)</span> <strong>that contains every possible h is not PAC learnable</strong></p>
+<h2 id="bias-complexity-trade-off">bias-complexity trade-off</h2>
+<p>Usually, we see a bias-variance trade-off. I think there may be some connection, but I haven’t seen it</p>
+<p>the idea is we divide the true risk as below</p>
+<p><span class="math display">\[
+\mathcal{L}_D(h)=\epsilon_{app}+\epsilon_{est}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_{app}=\min_{h'\in H}L_D(h')\)</span> and <span class="math inline">\(\epsilon_{est}=\mathcal{L}_D(h)-\epsilon_{app}\)</span></p>
+<ul>
+<li><p><span class="math inline">\(\epsilon_{app}\)</span>, approximation error, it measures how well your hypothesis space is</p></li>
+<li><p><span class="math inline">\(\epsilon_{est}\)</span>, estimation error, it measures how well your learner can estimate the best h (<span class="math inline">\(\in H\)</span>) using ERM</p></li>
+</ul>
+<p>approx error has nothing to do with how you train with the dataset. if your hypothesis space is well enough (or large enough), it will be small</p>
+<p>est error is on the opposite. It really depends on the learner, sample size so on. It’s similar to the <span class="math inline">\(\epsilon\)</span> in the definition of agnostic PAC learnability. If your h space is too large (too complicated), then it will need more samples to decrease the est error.</p>
+<p>so, large <span class="math inline">\(|H|\)</span> will reduce approx error, but it may be hard to have a small est error (overfitting), with a high probability a tr set will cause a bad generalization ability</p>
+<p>on the contrary, small <span class="math inline">\(|H|\)</span> indeed will give us a small est error but will cause a large approximate error (underfitting)</p>
+
+<hr>
+
+<nav class="info">
+    <a href="./">Home</a>
+    <a href="mailto:furyton@outlook.com">Email Me</a>
+</nav>
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>, this site project is located at <a href="https://github.com/Furyton/my-little-notes">Github</a>
+        </div>
+    </body>
+</html>
