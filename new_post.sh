@@ -21,4 +21,4 @@ tags:
 ---
 EOF
 
-vim "posts/"$filename
+# vim "posts/"$filename

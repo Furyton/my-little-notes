@@ -28,7 +28,7 @@ convergence of sequence, in terms of coordinates
 
 limits of multivariable functions: continuity is preserved under dot product operation
 
-continuity: the preimage of a neighborhood of $f(x)$ is also a neighborhood of x 
+continuity: the preimage of a neighborhood of $f(x)$ is also a neighborhood of x
 
 uniform continuity: linear transformations are uniform continuity
 
@@ -42,7 +42,7 @@ euler formular:  $e^{it}=cost+isint$
 
 geometric series of matrices:
 
-- $S=I+A+A^2+\dots$ converges to $(1-A)^{-1}$ if $\lVert A \rVert \lt 1$ 
+- $S=I+A+A^2+\dots$ converges to $(1-A)^{-1}$ if $\lVert A \rVert \lt 1$
 
 - the set of invertable n by n matrices is open
 
