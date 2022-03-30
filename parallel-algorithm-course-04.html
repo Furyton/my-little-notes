@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Notes - parallel algorithm course 04</title>
+        
+            <meta name="author" content="furyton">
+        
+        
+        <link rel="shortcut icon" type="image/x-icon" href="./images/captain-america-shield.jpg" />
+        <link rel="stylesheet" href="./css/default.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/blog.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+    
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="./">My back yard</a>
+            </div>
+            <div id="navigation">
+                <a href="./">Home</a>
+                <!-- <a href="/archive.html">Archive</a> -->
+                <a href="./about.html">About</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>parallel algorithm course 04</h1>
+
+            <div class="info">
+    Posted on March 30, 2022
+    
+        by furyton
+    
+</div>
+<div class="info">
+    
+    Tags: 
+    
+</div>
+
+<hr />
+<p>synchronization has costs</p>
+<hr />
+<p>simple list traversal</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// linked list</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> head<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>p<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    process<span class="op">(</span>p<span class="op">);</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> p<span class="op">-&gt;</span>next<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>compute all p <strong>in advance</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel for schedule(static, 1)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> count<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        process<span class="op">(</span>parr<span class="op">[</span>i<span class="op">]);</span></span></code></pre></div>
+<hr />
+<h2 id="task">task</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel {</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// not often used</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp task</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    foo<span class="op">();</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp barrier</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// more common case</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp single {</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="pp">#pragma omp task</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        bar<span class="op">();</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>example (with bug)</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fib<span class="op">(</span><span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> x<span class="op">,</span> y<span class="op">;</span> <span class="co">// private</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>n <span class="op">&lt;</span> <span class="dv">2</span><span class="op">)</span> <span class="cf">return</span> n<span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp task </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// need `shared(x)`. by default, task copy the whole stack, </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// x is in different address</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> fib<span class="op">(</span>n<span class="op">-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp task </span><span class="co">// need `shared(y)`, default is private in task</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> fib<span class="op">(</span>n<span class="op">-</span><span class="dv">2</span><span class="op">);</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp taskwait</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">+</span>y<span class="op">;</span> <span class="co">// wrong here!!!</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel single</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>fib<span class="op">(</span>n<span class="op">);</span></span></code></pre></div>
+<p>two important points</p>
+<ol type="1">
+<li><p><strong>barrier</strong></p></li>
+<li><p><strong>data env</strong></p></li>
+</ol>
+<p>example 2 (with bug)</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>list ml<span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Element <span class="op">*</span>e<span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp single</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>e<span class="op">=</span>ml<span class="op">-&gt;</span>first<span class="op">;</span> e<span class="op">;</span> e<span class="op">=</span>e<span class="op">-&gt;</span>next<span class="op">)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp task </span><span class="co">// need firstprivate(e)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        process<span class="op">(</span>e<span class="op">);</span> <span class="co">// has data racing</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>return to first example</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="pp">#pragma omp single</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        node<span class="op">*</span> p <span class="op">=</span> head<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span><span class="op">(</span>p<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            <span class="pp">#pragma omp task firstprivate(p)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                process<span class="op">(</span>p<span class="op">);</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            p <span class="op">=</span> p<span class="op">-&gt;</span>next<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<figure>
+<img src="./images/PA-04_task01.png" alt="running schema" />
+<figcaption aria-hidden="true">running schema</figcaption>
+</figure>
+<hr />
+<h2 id="merge-sort">merge sort</h2>
+<p>directly using parallel</p>
+<p><span class="math inline">\(T_1=2T_1(\frac{n}{2})+O(n)=O(n\cdot log(n)\)</span></p>
+<p><span class="math inline">\(T_\infty=T_\infty(\frac{n}{2})+O(n)=O(n)\)</span></p>
+<hr />
+<p>use a differernt merge method</p>
+<p>parallel merge</p>
+<p>say here we have two sorted seqs (<span class="math inline">\(\le\)</span>)</p>
+<p><span class="math inline">\(A=a_1,\dots,a_n\)</span> and <span class="math inline">\(B=b_1,\dots,b_n\)</span></p>
+<p>let <span class="math inline">\(t=a_{\lceil \frac{n}{2}\rceil}\)</span>, split A and B into sub arr <span class="math inline">\(A_1,A_2,B_1,B_2\)</span> s.t. <span class="math inline">\(A_1\le t, B_1\le t\)</span> and <span class="math inline">\(A_2\gt t, B_2\gt t\)</span></p>
+<p>so seq <span class="math inline">\(A_1,B_1,A_2,B_2\)</span> is semi-merged by t, then go on with <span class="math inline">\(merge(A_1,B_1)\)</span> and <span class="math inline">\(merge(A_2,B_2)\)</span></p>
+<h2 id="random-number-generating-problem">random number generating problem</h2>
+<h3 id="problem">problem</h3>
+<p>example: approximate <span class="math inline">\(\pi\)</span> using Monto Carlo</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>seed<span class="op">(</span>SEED<span class="op">);</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp parallel for private(x,y) reduction (+:n_in_circle)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> num_trials<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> random<span class="op">();</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> random<span class="op">();</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>x<span class="op">*</span>x <span class="op">+</span> y<span class="op">*</span>y <span class="op">&lt;=</span> r<span class="op">*</span>r<span class="op">)</span> n_in_circle <span class="op">++;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>pi <span class="op">=</span> <span class="fl">4.0</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1.0</span> <span class="op">*</span> n_in_circle <span class="op">/</span> num_trials<span class="op">);</span></span></code></pre></div>
+<hr />
+<p>Linear Congruential Generator(LCG) (has data racing problem)</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> random_last <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">// need </span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">// #pragma omp threadprivate(random_last)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> random<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    random_next <span class="op">=</span> <span class="op">(</span>MULTIPLIER <span class="op">*</span> random_last <span class="op">+</span> ADDEND<span class="op">)</span> <span class="op">%</span> PMOD<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    random_last <span class="op">=</span> random_next<span class="op">;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> random_next<span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>parameter: (one possible parameter suite) <code>MULTIPLIER=1366</code>, <code>ADDEND=150889</code>, <code>PMOD=714025</code></p>
+<p>has a <strong>period</strong> (less than PMOD)</p>
+<hr />
+<p>single thread and multi-thread has different accuracy (multi-thread has poor performance)</p>
+<p><strong>data racing</strong> on var <code>random_last</code></p>
+<h3 id="solution-1">solution 1</h3>
+<p>add <code>#pragma omp threadprivate(random_last)</code> under <code>int random_last=0</code></p>
+<p>has a local copy of <code>random_last</code> when creating a thread</p>
+<p>similar to <code>firstprivate</code></p>
+<p>problem: still poor than single thread version</p>
+<p>different random range in threads maybe overlap</p>
+<h3 id="solution-2">solution 2</h3>
+<p>Leap Frog method</p>
+<p>generate different seeds for each thread</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp single</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    nthreads</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    iseed <span class="op">=</span> PMOD <span class="op">/</span> MULTIPLIER<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    pseed<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> iseed<span class="op">;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    mult_n <span class="op">=</span> MULTIPLIER<span class="op">;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> nthreads<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        iseed <span class="op">=</span> <span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span><span class="op">)</span> <span class="op">((</span>MULTIPLIER <span class="op">*</span> iseed<span class="op">)</span> <span class="op">%</span> PMOD<span class="op">);</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        pseed<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> iseed<span class="op">;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        mult_n <span class="op">=</span> <span class="op">(</span>mult_n <span class="op">*</span> MULTIPLIER<span class="op">)</span> <span class="op">%</span> PMOD<span class="op">;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    random_last <span class="op">=</span> <span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span><span class="op">)</span> pseed<span class="op">[</span>id<span class="op">];</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+
+<hr>
+
+<nav class="info">
+    <a href="./">Home</a>
+    <a href="mailto:furyton@outlook.com">Email Me</a>
+</nav>
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>, this site project is located at <a href="https://github.com/Furyton/my-little-notes">Github</a>
+        </div>
+    </body>
+</html>
