@@ -46,7 +46,42 @@
     
 </div>
 
-<p>nonuniform learnability</p>
+<p>we will summarize different kinds of defs of learnability first</p>
+<h2 id="learnability">learnability</h2>
+<h3 id="pac-learnability">PAC learnability</h3>
+<p>H is PAC learnable if the realizability assumption holds and</p>
+<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span>, there exists a learner A and $m_H(,)
+$ s.t. for any sample sequence S with size <span class="math inline">\(m\ge m_H\)</span></p>
+<p>with probability greater than <span class="math inline">\(1-\delta\)</span></p>
+<p><span class="math display">\[
+L_D(A(S))\le \epsilon
+\]</span></p>
+<h3 id="agnostic-pac-learnability">agnostic PAC learnability</h3>
+<p>H is agnostic PAC learnable if</p>
+<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span>, there exists a learner A and <span class="math inline">\(m_H(\epsilon,\delta)\)</span> s.t. for any sample sequence S with size <span class="math inline">\(m\ge m_H\)</span></p>
+<p>with probability greater than <span class="math inline">\(1-\delta\)</span></p>
+<p><span class="math display">\[
+L_D(A(S))\le \min_{h\in H}\{L_D(h)\}+\epsilon
+\]</span></p>
+<h3 id="uniform-convergence-property">uniform convergence property</h3>
+<p>H enjoys the uniform convergence property if</p>
+<p><span class="math inline">\(\forall \epsilon,\delta \gt 0\)</span>, there exists <span class="math inline">\(m_H^{UC}(\epsilon, \delta)\)</span> s.t. for any sample sequence S with size <span class="math inline">\(m\ge m_H^{UC}\)</span></p>
+<p>with probability greater than <span class="math inline">\(1-\delta\)</span>, <span class="math inline">\(\forall h\in H\)</span></p>
+<p><span class="math display">\[
+|L_S(h) - L_D(h)|\le\epsilon
+\]</span></p>
+<p>these defination of learnibility are equal according to the fundamental theory</p>
+<hr />
+<p>here we have another def which has different power with the above</p>
+<h2 id="nonuniform-learnability">nonuniform learnability</h2>
+<p>we allow <span class="math inline">\(m_H\)</span> to be non-uniform over h</p>
+<p>H is nonuniform learnable if</p>
+<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span> there exists a learner A and <span class="math inline">\(m_H^{NUC}(\epsilon,\delta,h)\)</span>, s.t. for all <span class="math inline">\(h\in H\)</span> and any sample with size <span class="math inline">\(m\ge m_H^{NUC}(\epsilon,\delta,h)\)</span></p>
+<p>with probability greater than <span class="math inline">\(1-\delta\)</span></p>
+<p><span class="math display">\[
+L_D(A(S))\le L_D(h)+\epsilon
+\]</span></p>
+<p>note when m is decided, and it is that makes non-uniform learnability weaker than PAC</p>
 
 <hr>
 

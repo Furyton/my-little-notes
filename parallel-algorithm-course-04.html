@@ -42,7 +42,7 @@
 </div>
 <div class="info">
     
-    Tags: 
+    Tags: <a title="All pages tagged 'PA'." href="./tags/PA.html">PA</a>
     
 </div>
 
@@ -179,9 +179,10 @@
 <h3 id="solution-2">solution 2</h3>
 <p>Leap Frog method</p>
 <p>generate different seeds for each thread</p>
+<p>situation for <code>ADDEND=0</code></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma omp single</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    nthreads</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    nthreads <span class="op">=</span> <span class="op">...</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    iseed <span class="op">=</span> PMOD <span class="op">/</span> MULTIPLIER<span class="op">;</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    pseed<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> iseed<span class="op">;</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    mult_n <span class="op">=</span> MULTIPLIER<span class="op">;</span></span>
@@ -190,8 +191,9 @@
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        pseed<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> iseed<span class="op">;</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        mult_n <span class="op">=</span> <span class="op">(</span>mult_n <span class="op">*</span> MULTIPLIER<span class="op">)</span> <span class="op">%</span> PMOD<span class="op">;</span></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    random_last <span class="op">=</span> <span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span><span class="op">)</span> pseed<span class="op">[</span>id<span class="op">];</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    id <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    random_last <span class="op">=</span> <span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span><span class="op">)</span> pseed<span class="op">[</span>id<span class="op">];</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 
 <hr>
 
