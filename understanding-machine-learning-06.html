@@ -51,22 +51,22 @@
 <h3 id="pac-learnability">PAC learnability</h3>
 <p>H is PAC learnable if the realizability assumption holds and</p>
 <p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span>, there exists a learner A and $m_H(,)
-$ s.t. for any sample sequence S with size <span class="math inline">\(m\ge m_H\)</span></p>
-<p>with probability greater than <span class="math inline">\(1-\delta\)</span></p>
+$ s.t. if <span class="math inline">\(m\ge m_H\)</span></p>
+<p>for any D, with probability greater than <span class="math inline">\(1-\delta\)</span> over the choice of <span class="math inline">\(S\sim D^m\)</span></p>
 <p><span class="math display">\[
 L_D(A(S))\le \epsilon
 \]</span></p>
 <h3 id="agnostic-pac-learnability">agnostic PAC learnability</h3>
 <p>H is agnostic PAC learnable if</p>
-<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span>, there exists a learner A and <span class="math inline">\(m_H(\epsilon,\delta)\)</span> s.t. for any sample sequence S with size <span class="math inline">\(m\ge m_H\)</span></p>
-<p>with probability greater than <span class="math inline">\(1-\delta\)</span></p>
+<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span>, there exists a learner A and <span class="math inline">\(m_H(\epsilon,\delta)\)</span> s.t. if <span class="math inline">\(m\ge m_H\)</span></p>
+<p>for any D, with probability greater than <span class="math inline">\(1-\delta\)</span> over the choice of <span class="math inline">\(S\sim D^m\)</span></p>
 <p><span class="math display">\[
 L_D(A(S))\le \min_{h\in H}\{L_D(h)\}+\epsilon
 \]</span></p>
 <h3 id="uniform-convergence-property">uniform convergence property</h3>
 <p>H enjoys the uniform convergence property if</p>
-<p><span class="math inline">\(\forall \epsilon,\delta \gt 0\)</span>, there exists <span class="math inline">\(m_H^{UC}(\epsilon, \delta)\)</span> s.t. for any sample sequence S with size <span class="math inline">\(m\ge m_H^{UC}\)</span></p>
-<p>with probability greater than <span class="math inline">\(1-\delta\)</span>, <span class="math inline">\(\forall h\in H\)</span></p>
+<p><span class="math inline">\(\forall \epsilon,\delta \gt 0\)</span>, there exists <span class="math inline">\(m_H^{UC}(\epsilon, \delta)\)</span> s.t. if <span class="math inline">\(m\ge m_H^{UC}\)</span></p>
+<p>for any D, with probability greater than <span class="math inline">\(1-\delta\)</span> over the choice of <span class="math inline">\(S\sim D^m\)</span>, <span class="math inline">\(\forall h\in H\)</span></p>
 <p><span class="math display">\[
 |L_S(h) - L_D(h)|\le\epsilon
 \]</span></p>
@@ -76,12 +76,94 @@ L_D(A(S))\le \min_{h\in H}\{L_D(h)\}+\epsilon
 <h2 id="nonuniform-learnability">nonuniform learnability</h2>
 <p>we allow <span class="math inline">\(m_H\)</span> to be non-uniform over h</p>
 <p>H is nonuniform learnable if</p>
-<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span> there exists a learner A and <span class="math inline">\(m_H^{NUC}(\epsilon,\delta,h)\)</span>, s.t. for all <span class="math inline">\(h\in H\)</span> and any sample with size <span class="math inline">\(m\ge m_H^{NUC}(\epsilon,\delta,h)\)</span></p>
-<p>with probability greater than <span class="math inline">\(1-\delta\)</span></p>
+<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span> there exists a learner A and <span class="math inline">\(m_H^{NU}(\epsilon,\delta,h)\)</span>, s.t. for all <span class="math inline">\(h\in H\)</span>, if <span class="math inline">\(m\ge m_H^{NU}(\epsilon,\delta,h)\)</span></p>
+<p>for any D, with probability greater than <span class="math inline">\(1-\delta\)</span> over the choice of <span class="math inline">\(S\sim D^m\)</span></p>
 <p><span class="math display">\[
 L_D(A(S))\le L_D(h)+\epsilon
 \]</span></p>
 <p>note when m is decided, and it is that makes non-uniform learnability weaker than PAC</p>
+<h3 id="property">property</h3>
+<p>H is nonuniform learnable iff H can be expressed as a <strong>union</strong> of countable <span class="math inline">\(H_i\)</span> with uniform convergence property</p>
+<p>we can easily construct H that is nonuniform learnable but not PAC learnable which means PAC learnability is stronger</p>
+<h3 id="generic-learner">generic learner</h3>
+<p>ERM is a fittable learer for PAC learnability</p>
+<p>SRM (structural risk minimization) is a fittable learner for NU learnability</p>
+<p>SRM requires us to provide more prior knowledge on the priority (weights) of <span class="math inline">\(H_i\)</span>’s.</p>
+<p>def <span class="math inline">\(\epsilon_n(m,\delta)=\min\{\epsilon\in (0,1):m_{H_n}^{UC}(\epsilon,\delta)\le m\}\)</span> which means the minimum est error we can get with m samples</p>
+<p>so given m samples</p>
+<p><span class="math display">\[
+\forall h\in H_n,|L_D(h)-L_S(h)|\le \epsilon_n(m,\delta)
+\]</span></p>
+<blockquote>
+<p>note m here can be varied (I’m not so sure about this) or large enough (s.t. <span class="math inline">\(\forall n,\epsilon_n(m,\delta)\le \epsilon\)</span>) during training</p>
+</blockquote>
+<p>when we put this on a larger range (<span class="math inline">\(H_n\rightarrow H\)</span>) directly, we can’t garantee we satisfy the <span class="math inline">\(\delta\)</span> constraint, since each one has relatively low confidence <span class="math inline">\(1-\delta\)</span>. So we have to split the confidence to each <span class="math inline">\(H_i\)</span>, that is providing weights <span class="math inline">\(\sum_{n\in\N}w(n)\le 1\)</span> on each <span class="math inline">\(\delta\)</span> (use union bound inequality to merge it back)</p>
+<p>to put it formally</p>
+<p>given <span class="math inline">\(H=\cup_{n\in\N}H_n\)</span> and <span class="math inline">\(\sum_{n\in\N}w(n)\le 1\)</span>, where <span class="math inline">\(H_i\)</span> satisfy UC property, then</p>
+<p>with probatility of at least <span class="math inline">\(1-\delta\)</span> over the choice <span class="math inline">\(S\sim D^m\)</span></p>
+<p>for any <span class="math inline">\(n\in\N\)</span> and <span class="math inline">\(h\in H_n\)</span></p>
+<p><span class="math display">\[
+|L_D(h)-L_S(h)|\le \epsilon_n(m,w(n)\cdot \delta)
+\]</span></p>
+<p>which implies for <span class="math inline">\(\forall h\in H\)</span></p>
+<p><span class="math display">\[
+L_D(h)\le L_S(h)+\min_{n:h\in H_n}\epsilon_n(m,w(n)\cdot\delta)
+\]</span></p>
+<p>if we make it simpler (but looser), let <span class="math inline">\(n(h)=min\{n:h\in H_n\}\)</span></p>
+<p><span class="math display">\[
+L_D(h)\le L_S(h)+\epsilon_n(m,w(n(h))\cdot\delta)
+\]</span></p>
+<p>SO, SRM is to minimizing the RHS</p>
+<p>we can proof that <span class="math inline">\(L_D(A(S))\le L_D(h)+\epsilon\)</span> with p at least <span class="math inline">\(1-\delta\)</span> over the choice of S (if <span class="math inline">\(m\ge m_{H_{n(h)}}^{UC}(\epsilon/2,w(n(h))\cdot \delta)\)</span>)</p>
+<hr />
+<p>in fact, any converged sumations should be ok for w, like <span class="math inline">\(w(n)=\frac{6}{n^2\pi^2}\)</span></p>
+<p>intuitively, <span class="math inline">\(H_n\)</span> with larger <span class="math inline">\(w(n)\)</span> will need less samples since it is required for less confidence, we actually focus on <strong>some</strong> hypothesis classes instead of treat all <span class="math inline">\(H_n\)</span> evenly.</p>
+<p>second, if <span class="math inline">\(h_1\)</span> and <span class="math inline">\(h_2\)</span> has the same empirical risk, we will prefer the one with higher weight if using SRM</p>
+<p>seems familiar? sounds like the principle Occam’s razor</p>
+<h3 id="description-length">description length</h3>
+<p>we now consider a countable <span class="math inline">\(H\)</span>. it can be expressed as a union of singleton class <span class="math inline">\(H_i=\{h_i\}\)</span> and for each <span class="math inline">\(H_i\)</span>, <span class="math inline">\(m_{H_i}^{UC}(\epsilon,\delta)= \left\lceil\frac{log(2/\delta)}{2\epsilon^2}\right\rceil\)</span></p>
+<p>then <span class="math inline">\(e_n(m,w(n(h))\cdot \delta)= \sqrt{\frac{-logw(n(h)) +log(2/\delta)}{2m}}\)</span></p>
+<p>def description language <span class="math inline">\(\{0,1\}^\star\)</span></p>
+<p>we assign each <span class="math inline">\(H_i\)</span> with a description <span class="math inline">\(d(h)\)</span> and denote <span class="math inline">\(|h|=|d(h)|\)</span></p>
+<hr />
+<blockquote>
+<p>if S is a <strong>prefix-free</strong> set of strings, then</p>
+<p><span class="math display">\[
+\sum_{\sigma\in S}\frac{1}{2^{|\sigma|}}\le 1
+\]</span></p>
+</blockquote>
+<hr />
+<p>so <span class="math inline">\(w(h)=\frac{1}{2^{|h|}}\)</span> is a legal weight function</p>
+<p>and the hypothesis with smaller description length is preferable if they have the same risk</p>
+<p>that’s the principle of Occam’s razor</p>
+<h2 id="consistency">consistency</h2>
+<blockquote>
+<p>if we let <span class="math inline">\(m_H\)</span> further be dependent on the distribution, we have the def of consistency</p>
+</blockquote>
+<p>a learner A is consistency with respect to H and P where P is the set of possible distribution D’s, if</p>
+<p><span class="math inline">\(\forall \epsilon,\delta\gt 0\)</span> there exists a learner A and <span class="math inline">\(m_H^{NU}(\epsilon,\delta,h,D)\)</span>, s.t. for all <span class="math inline">\(h\in H\)</span> and <span class="math inline">\(D\in P\)</span>, if <span class="math inline">\(m\ge m_H^{NU}(\epsilon,\delta,h,D)\)</span></p>
+<p>with probability greater than <span class="math inline">\(1-\delta\)</span> over the choice of <span class="math inline">\(S\sim D^m\)</span></p>
+<p><span class="math display">\[
+L_D(A(S))\le L_D(h)+\epsilon
+\]</span></p>
+<blockquote>
+<p>if P is the set of all distributions, then A is universally consistent with respect to H</p>
+</blockquote>
+<p>this def of learnability is even weaker than NU</p>
+<p>the algorithm <code>Memorize</code> is universally consistent which will be overfit in the context of PAC learnability!!! (for every countable domain and finite label set w.r.t. zero-one loss)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Memorize(x)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y <span class="cf">if</span> (x,y) <span class="kw">in</span> S <span class="cf">else</span> <span class="dv">0</span> <span class="co"># any default value </span></span></code></pre></div>
+<hr />
+<p>why different ability?</p>
+<p>note when we determine the <span class="math inline">\(m\)</span></p>
+<hr />
+<h2 id="exercise">exercise</h2>
+<ul>
+<li><p>7.5. H that contains all functions is not nonuniform learnable</p>
+<ul>
+<li>conclusion: <span class="math inline">\(H=\cup_{n\in\N}H_n\)</span>, if H shatters an infinite set, the some <span class="math inline">\(H_n\)</span> has infinite VC dim</li>
+</ul></li>
+</ul>
 
 <hr>
 
