@@ -66,6 +66,7 @@ main = hakyllWith config $ do
             makeItem ""
               >>= loadAndApplyTemplate "templates/tag-list.html" (defaultCtxWithTags tags)
               >>= loadAndApplyTemplate "templates/default.html" defaultContext
+              >>= relativizeUrls
 
     tagsRules tags $ \tag pat -> do
         route idRoute
