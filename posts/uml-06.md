@@ -13,8 +13,7 @@ we will summarize different kinds of defs of learnability first
 
 H is PAC learnable if the realizability assumption holds and
 
-$\forall \epsilon,\delta\gt 0$, there exists a learner A and $m_H(\epsilon,\delta)
-$ s.t. if $m\ge m_H$
+$\forall \epsilon,\delta\gt 0$, there exists a learner A and $m_H(\epsilon,\delta)$ s.t. if $m\ge m_H$
 
 for any D, with probability greater than $1-\delta$ over the choice of $S\sim D^m$
 
