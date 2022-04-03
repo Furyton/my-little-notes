@@ -10,7 +10,6 @@ import qualified Data.Text as T
 import           Text.Pandoc.Options
 import           Text.Pandoc.Extensions
 import           Text.Pandoc.Highlighting
--- import           Text.Blaze.Html5.Attributes as A
 
 --------------------------------------------------------------------------------
 -- | Entry point
