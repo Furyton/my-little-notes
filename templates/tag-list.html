@@ -1,0 +1,14 @@
+<ul>
+    $for(tags)$
+    <li>
+        <a href="$url$">$title$</a>
+    </li>
+    <ul>
+        $for(posts)$
+        <li>
+            <a href="$url$">$title$</a>
+        </li>
+        $endfor$
+    </ul>
+    $endfor$
+</ul>
